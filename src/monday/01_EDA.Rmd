@@ -46,10 +46,16 @@ library("ggplot2")
 
 Definimos las variables los paths donde encontrar los datasets.
 
+
 ```{r}
-carpeta_datasetsOri <-  "../../../datasetsOri/"
+carpeta_datasetsOri <-  "C:/Users/Diego/Google Drive (diegodelucag@gmail.com)/Maestria_Data_Science/DM_EyF/datasetsOri"
 septiembre <- "paquete_premium_202009.csv"
 
+```
+
+
+```{r}
+getwd()
 ```
 
 Vamos a cargar los datos a memoria.
@@ -58,6 +64,11 @@ Vamos a cargar los datos a memoria.
 
 ds <- fread(paste0(carpeta_datasetsOri, septiembre,collapse = ""), header=TRUE, showProgress = FALSE)
 
+```
+
+
+```{r}
+ds <- fread("C:/Users/Diego/Google Drive (diegodelucag@gmail.com)/Maestria_Data_Science/DM_EyF/datasetsOri/paquete_premium_202009.csv")
 ```
 
 Visualizamos las primeras filas, es una forma de ir metiendo las manos en la masa. Si bien puede parecer que esto tiene poco valor, somos seres que seguimos necesitando ver las cosas con nuestros ojos.
@@ -111,11 +122,13 @@ Examinemos la estructura de las variables independientemente. Exploremos los est
 
 library('dataMaid')  
 # Produce un "lindo" reporte 
-# makeDataReport(ds,render = FALSE, file = "01_EDA_ds.Rmd", replace = TRUE) 
+makeDataReport(ds,render = FALSE, file = "01_EDA_ds.Rmd", replace = TRUE) 
 
-s <- summarize(ds, reportstyleOutput = TRUE)
+s <- dataMaid::summarize(ds, reportstyleOutput = TRUE)
 
 ```
+
+
 
 **cliente_antiguedad**
 
@@ -136,17 +149,17 @@ Examine los estadísticos resultantes, sin olvidar nunca del inmenso [Datasaurus
 **Preguntas**:
 
 -   ¿Qué significa que una variable numérica tenga solo 5 valores distintos?
-
+Es discreta
 -   ¿Es útil una variable categórica con 120 valores distintos?
-
+No. pero se puede discretizar
 -   ¿Cómo son las variables fechas?
-
+Contínuas
 -   ¿Cómo supone que van a afectar los valores ausentes?
-
+No afectan árboles
 -   ¿Todos los valores ausentes tienen el mismo significado?
-
+No, depende de lo que represente la variable para el problema. 
 -   ¿Cómo imputaría los valores ausentes?
-
+Depende de la variable, depende de si estoy particionando los datos, depende como se distribuyan los NAs
 Veamos la distribución de una variable, tomando una cualquiera.
 
 ```{r}
@@ -158,10 +171,11 @@ ggplot(ds, aes(y=mcomisiones_mantenimiento)) + geom_boxplot()
 **Preguntas:**
 
 -   ¿Es un *boxplot* de los que está acostumbrado a ver?
-
+NO
 -   ¿Qué son los puntos negros?
-
+Outliers
 -   ¿Estas características pueden afectar a la elección del algoritmo para armar el modelo?
+Si, hay modelos sensibles a outliers.
 
 La distribución anterior contempla sólo los valores de la variable. ¿Y si empezamos a ver como se comportan los estadísticos según la clase?
 
@@ -182,6 +196,10 @@ ggplot(ds, aes(x=mcomisiones_mantenimiento)) +
 
 Aplique un análisis similar para otras variables numéricas que usted considere relevantes.
 :::
+
+
+
+
 
 Pasemos ahora a una variable que podemos *suponer* que puede ser categórica. Tomemos `Visa_status`, aunque quizás sea más ordinal que categórica (esta no la elegimos ya desde un criterio no tan aleatorio).
 
@@ -255,15 +273,239 @@ cat("Ganancia =",ds_visa_estado[Ganancia > 0, sum(Ganancia)])
 ::: {.tarea}
 **TAREA**
 
+##Analisis de variables propio
+
+```{r}
+s$cproductos
+```
+```{r}
+ggplot(ds, aes(x=cproductos)) +
+  facet_grid(clase_ternaria ~ .) +
+  geom_density()
+```
+
+
+```{r}
+#Analisis por variable: la cantidad de productos no parece ser tan interesante
+
+ds_cproductos <- dcast(ds, cproductos  ~ clase_ternaria, 
+                        length, 
+                        value.var = "clase_ternaria" )
+
+ds_cproductos[, total := (`BAJA+1`+`BAJA+2`+CONTINUA)]
+ds_cproductos[, ratio_baja2 := `BAJA+2` / total]
+ds_cproductos[, cproductos := factor(cproductos)]
+ds_cproductos[, lift := (ratio_baja2 / churn)]
+ds_cproductos[, Ganancia :=  48750 * `BAJA+2` - 1250 * (CONTINUA + `BAJA+1`) ]
+
+ds_cproductos
+cat("Ganancia =",ds_cproductos[Ganancia > 0, sum(Ganancia)])
+
+
+```
+
+```{r}
+#Armo una variable nueva que es la cantidad de transacciones con todas las tarjetas
+
+ds$tx_total_tarjetas <-rowSums(cbind(ds$ctarjeta_master_transacciones,
+                                  ds$ctarjeta_visa_transacciones,ds$ctarjeta_debito_transacciones))
+
+#sum(ds$tx_total_tarjetas)
+#sum(ds$ctarjeta_master_transacciones,ds$ctarjeta_visa_transacciones,ds$ctarjeta_debito_transacciones)
+
+```
+
+```{r}
+
+ds_tx_total_tarjetas <- dcast(ds,tx_total_tarjetas  ~ clase_ternaria, 
+                        length,
+                        subset = .(tx_total_tarjetas < 10),
+                        value.var = "clase_ternaria" )
+
+
+ds_tx_total_tarjetas[, total := (`BAJA+1`+`BAJA+2`+CONTINUA)]
+ds_tx_total_tarjetas[, ratio_baja2 := `BAJA+2` / total]
+ds_tx_total_tarjetas[, tx_total_tarjetas := factor(tx_total_tarjetas)]
+ds_tx_total_tarjetas[, lift := (ratio_baja2 / churn)]
+ds_tx_total_tarjetas[, Ganancia :=  48750 * `BAJA+2` - 1250 * (CONTINUA + `BAJA+1`) ]
+
+
+ds_tx_total_tarjetas
+```
+
+```{r}
+
+boxplot(ds$catm_trx_other ~ ds$clase_ternaria=="BAJA+2") 
+
+```
+
+```{r}
+
+ds$tx_total <-rowSums(cbind(ds$ctarjeta_master_transacciones,
+                            ds$ctarjeta_visa_transacciones,
+                            ds$ctarjeta_debito_transacciones,
+                            ds$cforex,
+                            ds$ccallcenter_transacciones,
+                            ds$chomebanking_transacciones,
+                            ds$ccajas_transacciones,
+                            ds$ccajas_otras,
+                            ds$catm_trx,
+                            ds$catm_trx_other,
+                            ds$cmobile_app_trx))
+
+# sum(ds$tx_total)
+# sum(ds$ctarjeta_master_transacciones,
+#                             ds$ctarjeta_visa_transacciones,
+#                             ds$ctarjeta_debito_transacciones,
+#                             ds$cforex,
+#                             ds$ccallcenter_transacciones,
+#                             ds$chomebanking_transacciones,
+#                             ds$ccajas_transacciones,
+#                             ds$ccajas_otras,
+#                             ds$catm_trx,
+#                             ds$catm_trx_other,
+#                             ds$cmobile_app_trx)
+```
+
+
+```{r}
+#Entender comportamiento de transacciones por clase_ternaria
+
+#boxplot(ds$tx_total ~ ds$clase_ternaria=="BAJA+2") 
+
+ggplot(ds, aes(x=tx_total)) +
+  facet_grid(clase_ternaria ~ .) +
+  geom_density()
+
+```
+
+```{r}
+s$tx_total
+```
+
+```{r}
+
+ds_txtotal <- dcast(ds, tx_total  ~ clase_ternaria, 
+                        length, 
+                        subset = .(tx_total < 10),
+                        value.var = "clase_ternaria" )
+
+ds_txtotal[, total := (`BAJA+1`+`BAJA+2`+CONTINUA)]
+ds_txtotal[, Ganancia :=  48750 * `BAJA+2` - 1250 * (CONTINUA + `BAJA+1`) ]
+ds_txtotal[, ratio_baja2 := `BAJA+2` / total]
+ds_txtotal[, tx_total := factor(tx_total)]
+ds_txtotal[, lift := (ratio_baja2 / churn)]
+
+
+ds_txtotal
+cat("Ganancia =",ds_txtotal[Ganancia > 0, sum(Ganancia)])
+
+
+```
+
+
+```{r}
+s$tx_total
+```
+
+```{r}
+
+ds$tx_total2 <-rowSums(cbind(ds$ctarjeta_master_transacciones,
+                            ds$ctarjeta_visa_transacciones,
+                            ds$ctarjeta_debito_transacciones,
+                            ds$cforex,
+                            ds$ccallcenter_transacciones,
+                            ds$chomebanking_transacciones,
+                            ds$ccajas_transacciones,
+                            ds$ccajas_otras,
+                            ds$catm_trx,
+                            ds$catm_trx_other,
+                            ds$cmobile_app_trx,
+                            ds$ctrx_quarter))
+
+# sum(ds$tx_total2)
+# sum(ds$ctarjeta_master_transacciones,
+#                             ds$ctarjeta_visa_transacciones,
+#                             ds$ctarjeta_debito_transacciones,
+#                             ds$cforex,
+#                             ds$ccallcenter_transacciones,
+#                             ds$chomebanking_transacciones,
+#                             ds$ccajas_transacciones,
+#                             ds$ccajas_otras,
+#                             ds$catm_trx,
+#                             ds$catm_trx_other,
+#                             ds$ctrx_quarter,
+#                             ds$cmobile_app_trx)
+```
+
+
+```{r}
+
+ds_txtotal2 <- dcast(ds, tx_total2  ~ clase_ternaria, 
+                        length, 
+                        subset = .(tx_total2 <15),
+                        value.var = "clase_ternaria" )
+
+ds_txtotal2[, total := (`BAJA+1`+`BAJA+2`+CONTINUA)]
+ds_txtotal2[, ratio_baja2 := `BAJA+2` / total]
+ds_txtotal2[, tx_total2 := factor(tx_total2)]
+ds_txtotal2[, lift := (ratio_baja2 / churn)]
+ds_txtotal2[, Ganancia :=  48750 * `BAJA+2` - 1250 * (CONTINUA + `BAJA+1`) ]
+
+
+ds_txtotal2
+
+cat("Ganancia =",ds_txtotal2[Ganancia > 0,sum(Ganancia)]) 
+colSums(ds_txtotal2[,"Ganancia"])
+
+
+```
+
 De forma similar a `Visa_status`, analice y combine con la variable `Master_status`. ¿Logra una mejor regla cuando están combinadas?
 :::
+
+
+```{r}
+
+ds_masterstatus <- dcast(ds,Master_status  ~ clase_ternaria, 
+                        length, 
+                        value.var = "clase_ternaria" )
+
+ds_masterstatus[, total := (`BAJA+1`+`BAJA+2`+CONTINUA)]
+ds_masterstatus[, ratio_baja2 := `BAJA+2` / total]
+ds_masterstatus[, Master_status := factor(Master_status)]
+ds_masterstatus[, lift := (ratio_baja2 / churn)]
+ds_masterstatus[, Ganancia :=  48750 * `BAJA+2` - 1250 * (CONTINUA + `BAJA+1`) ]
+
+
+ds_masterstatus
+cat("Ganancia =",ds_masterstatus[Ganancia > 0, sum(Ganancia)])
+
+```
+```{r}
+ds_visa_estado
+```
+
+Si combino el estatus de visa y master 
+
+```{r}
+
+visa_master <- ds[, .N , keyby = .(clase_ternaria,Visa_status, Master_status), ]
+visa_master
+
+table(ds$Visa_status, ds$Master_status,ds$clase_ternaria)
+
+```
+
+
 
 Vamos por un análisis más.
 
 Un **analista de negocio** pensará que una de las variables más fuertes es el nivel de actividad de una cuenta. Observa que hay una variable llamada `ctrx_quarter` que refleja la cantidad de movimientos que el cliente realizó en los últimos 90 días. Ayudemos al **analista** a validar su hipótesis.
 
 ```{r}
-s$ctrx_quarter
+s$tx_total
+
 ```
 
 Vemos que tiene una fuerte asimetría, estudiemos solamente a la gente con pocos movimientos.
@@ -301,9 +543,10 @@ Una forma de saber cuales son las variables que merecen nuestra atención, es re
 library(rpart)
 
 modelo <- rpart( clase_ternaria ~ ., data = ds, cp=0.0005, xval=0 )
-
 as.data.frame(modelo$variable.importance)
+
 ```
+
 
 ::: {.tarea}
 **TAREA AVANZADA Y OPCIONAL**
