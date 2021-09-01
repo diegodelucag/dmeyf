@@ -1,0 +1,48 @@
+---
+title: "Analisis Grid Search"
+author: "Diego De Luca"
+date: "30/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+require("data.table")
+
+```
+
+
+```{r cars}
+setwd("C:/Users/Diego/Google Drive (diegodelucag@gmail.com)/Maestria_Data_Science/DM_EyF")
+e251 <-fread (file = "./work/E251.txt")
+e250 <-fread (file = "./work/E250.txt")
+e252 <-fread (file = "./work/E252.txt")
+
+```
+
+```{r}
+prueba <- unique(rbind(e250,e251,e252))
+
+```
+
+```{r}
+round(cor(prueba[,2:6]),2)
+```
+```{r}
+plot(prueba$ganancia,prueba$minsplit)
+```
+
+```{r}
+plot(prueba$ganancia,prueba$minbucket)
+```
+```{r}
+require("prcomp")
+require("ggbiplot")
+
+pca <-prcomp(prueba[,2:6])
+```
+

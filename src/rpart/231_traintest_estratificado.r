@@ -50,4 +50,3 @@ ganancia_test  <- dataset[ fold==2 & prob_baja2 > 0.025, sum(ganancia) ]
 ganancia_test_normalizada  <-  ganancia_test / 0.3
 
 ganancia_test_normalizada
-
