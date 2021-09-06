@@ -26,6 +26,7 @@ switch ( Sys.info()[['sysname']],
        )
 #defino la carpeta donde trabajo
 setwd( directory.root )
+setwd( "C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF" )
 
 
 kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
@@ -40,10 +41,10 @@ hs  <- makeParamSet(
           makeIntegerParam("minsplit" , lower=  1L  , upper= 8000L),  #la letra L al final significa ENTERO
           makeIntegerParam("minbucket", lower=  1L  , upper= 2000L),
           makeIntegerParam("maxdepth" , lower=  3L  , upper=   20L),
-          forbidden = quote( minbucket > 0.5*minsplit ) )
+          forbidden = quote( minbucket > 0.5*minsplit ) ) #que no pruebe casos sin sentido: un hijo no puede ser mas grande que el padre
 
 
-ksemilla_azar  <- 102191
+ksemilla_azar  <- 589481 #102191
 #------------------------------------------------------------------------------
 #Funcion que lleva el registro de los experimentos
 

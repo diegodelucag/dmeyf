@@ -7,6 +7,8 @@ require("data.table")
 
 #Aqui comienza el programa
 setwd("~/buckets/b1/crudoB/")
+getwd()
+setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
 
 datasetA  <- fread( "./datasetsOri/paquete_premium_202009.csv" )
 datasetB  <- fread( "./datasetsOri/paquete_premium_202011.csv" )
@@ -41,3 +43,15 @@ for( campo in  campos_buenos )
 
 }
 dev.off()
+
+##########
+
+#contar los datos de la variable
+
+datasetA[internet==0,.N]
+datasetB[internet==0,.N]
+
+datasetA[internet==1,.N]
+datasetB[internet==2,.N]
+uniqueN(datasetB, by =datasetB$internet)
+

@@ -1,0 +1,444 @@
+# Variable list
+## numero\_de\_cliente
+
+<div class = "row">
+<div class = "col-lg-8">
+
+---------------------------------------------------
+Feature                                      Result
+------------------------- -------------------------
+Variable type                               integer
+
+Number of missing obs.                      0 (0 %)
+
+Number of unique values                      238986
+
+Median                                   24597815.5
+
+1st and 3rd quartiles       15757409.75; 35673527.5
+
+Min. and max.                     4572294; 61445786
+---------------------------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-1-numero-de-cliente', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(0, 5e+06, 1e+07, 1.5e+07, 
+2e+07, 2.5e+07, 3e+07, 3.5e+07, 4e+07, 4.5e+07, 5e+07, 5.5e+07, 
+6e+07), xmax = c(5e+06, 1e+07, 1.5e+07, 2e+07, 2.5e+07, 3e+07, 
+3.5e+07, 4e+07, 4.5e+07, 5e+07, 5.5e+07, 6e+07, 6.5e+07), ymin = c(0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(3272L, 33150L, 
+17749L, 33608L, 33971L, 26052L, 27950L, 22389L, 17474L, 9608L, 
+7705L, 5352L, 706L)), class = "data.frame", row.names = c(NA, 
+-13L)), vnam = "numero_de_cliente")
+```
+
+</div>
+</div>
+
+
+
+
+---
+
+## foto\_mes
+
+* The variable only takes one (non-missing) value: \"202011\". The variable contains 0 \% missing observations.
+
+
+
+---
+
+## active\_quarter
+
+* Note that this variable is treated as a factor variable below, as it only takes a few unique values.
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-----------------------------------
+Feature                      Result
+------------------------- ---------
+Variable type               integer
+
+Number of missing obs.      0 (0 %)
+
+Number of unique values           2
+
+Mode                            "1"
+
+Reference category                0
+-----------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-3-active-quarter', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggBarplot(data = structure(list(x = structure(1:2, .Label = c("0", 
+"1"), class = "factor"), y = c(4208L, 234778L)), class = "data.frame", row.names = c(NA, 
+-2L)), vnam = "active_quarter")
+```
+
+</div>
+</div>
+
+
+
+
+---
+
+## cliente\_vip
+
+* Note that this variable is treated as a factor variable below, as it only takes a few unique values.
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-----------------------------------
+Feature                      Result
+------------------------- ---------
+Variable type               integer
+
+Number of missing obs.      0 (0 %)
+
+Number of unique values           2
+
+Mode                            "0"
+
+Reference category                0
+-----------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-4-cliente-vip', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggBarplot(data = structure(list(x = structure(1:2, .Label = c("0", 
+"1"), class = "factor"), y = c(237714L, 1272L)), class = "data.frame", row.names = c(NA, 
+-2L)), vnam = "cliente_vip")
+```
+
+</div>
+</div>
+
+
+
+
+---
+
+## internet
+
+* Note that this variable is treated as a factor variable below, as it only takes a few unique values.
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-----------------------------------
+Feature                      Result
+------------------------- ---------
+Variable type               integer
+
+Number of missing obs.      0 (0 %)
+
+Number of unique values           5
+
+Mode                            "0"
+
+Reference category                0
+-----------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-5-internet', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggBarplot(data = structure(list(x = structure(1:5, .Label = c("0", 
+"1", "2", "3", "4"), class = "factor"), y = c(232130L, 5037L, 
+1505L, 309L, 5L)), class = "data.frame", row.names = c(NA, -5L
+)), vnam = "internet")
+```
+
+</div>
+</div>
+
+
+- Note that the following levels have at most five observations: \"4\". 
+
+
+
+---
+
+## cliente\_edad
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-----------------------------------
+Feature                      Result
+------------------------- ---------
+Variable type               integer
+
+Number of missing obs.      0 (0 %)
+
+Number of unique values          81
+
+Median                           45
+
+1st and 3rd quartiles        37; 55
+
+Min. and max.                18; 98
+-----------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-6-cliente-edad', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(15L, 20L, 25L, 30L, 
+35L, 40L, 45L, 50L, 55L, 60L, 65L, 70L, 75L, 80L, 85L, 90L, 95L
+), xmax = c(20L, 25L, 30L, 35L, 40L, 45L, 50L, 55L, 60L, 65L, 
+70L, 75L, 80L, 85L, 90L, 95L, 100L), ymin = c(0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(122L, 4622L, 17596L, 
+30212L, 35923L, 36831L, 30544L, 23961L, 20094L, 16414L, 11140L, 
+6799L, 3415L, 1011L, 252L, 47L, 3L)), class = "data.frame", row.names = c(NA, 
+-17L)), vnam = "cliente_edad")
+```
+
+</div>
+</div>
+
+
+- Note that the following possible outlier values were detected: \"18\", \"19\", \"20\", \"21\", \"97\", \"98\". 
+
+
+
+---
+
+## cliente\_antiguedad
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-----------------------------------
+Feature                      Result
+------------------------- ---------
+Variable type               integer
+
+Number of missing obs.      0 (0 %)
+
+Number of unique values         319
+
+Median                          124
+
+1st and 3rd quartiles       60; 185
+
+Min. and max.                1; 371
+-----------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-7-cliente-antiguedad', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(0, 20, 40, 60, 80, 100, 
+120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360
+), xmax = c(20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 
+240, 260, 280, 300, 320, 340, 360, 380), ymin = c(0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(18005L, 
+18235L, 24566L, 20827L, 16791L, 18028L, 22078L, 18276L, 18025L, 
+17373L, 9054L, 8227L, 6572L, 6448L, 3917L, 10542L, 0L, 0L, 2022L
+)), class = "data.frame", row.names = c(NA, -19L)), vnam = "cliente_antiguedad")
+```
+
+</div>
+</div>
+
+
+
+
+---
+
+## mrentabilidad
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-------------------------------------------------
+Feature                                    Result
+------------------------- -----------------------
+Variable type                             numeric
+
+Number of missing obs.                    0 (0 %)
+
+Number of unique values                    198672
+
+Median                                    1018.98
+
+1st and 3rd quartiles              23.62; 2551.06
+
+Min. and max.               -639278.09; 634832.81
+-------------------------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-8-mrentabilidad', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(-650000, -6e+05, -550000, 
+-5e+05, -450000, -4e+05, -350000, -3e+05, -250000, -2e+05, -150000, 
+-1e+05, -50000, 0, 50000, 1e+05, 150000, 2e+05, 250000, 3e+05, 
+350000, 4e+05, 450000, 5e+05, 550000, 6e+05), xmax = c(-6e+05, 
+-550000, -5e+05, -450000, -4e+05, -350000, -3e+05, -250000, -2e+05, 
+-150000, -1e+05, -50000, 0, 50000, 1e+05, 150000, 2e+05, 250000, 
+3e+05, 350000, 4e+05, 450000, 5e+05, 550000, 6e+05, 650000), 
+    ymin = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(1L, 1L, 0L, 0L, 0L, 
+    0L, 1L, 1L, 0L, 2L, 3L, 30L, 57000L, 181399L, 411L, 82L, 
+    27L, 12L, 7L, 2L, 2L, 1L, 1L, 1L, 0L, 2L)), class = "data.frame", row.names = c(NA, 
+-26L)), vnam = "mrentabilidad")
+```
+
+</div>
+</div>
+
+
+- Note that the following possible outlier values were detected: \"-639278.09\", \"-564427.83\", \"-322637.11\", \"-254992.85\", \"-192810.41\", \"-161816.86\", \"-142079.05\", \"-109365.1\", \"-106268.78\", \"-99383.23\" (29631 additional values omitted). 
+
+
+
+---
+
+## mrentabilidad\_annual
+
+<div class = "row">
+<div class = "col-lg-8">
+
+---------------------------------------------------
+Feature                                      Result
+------------------------- -------------------------
+Variable type                               numeric
+
+Number of missing obs.                      0 (0 %)
+
+Number of unique values                      233530
+
+Median                                     14044.09
+
+1st and 3rd quartiles             3341.84; 31310.44
+
+Min. and max.               -3189342.83; 8446171.21
+---------------------------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-9-mrentabilidad-annual', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(-3500000, -3e+06, -2500000, 
+-2e+06, -1500000, -1e+06, -5e+05, 0, 5e+05, 1e+06, 1500000, 2e+06, 
+2500000, 3e+06, 3500000, 4e+06, 4500000, 5e+06, 5500000, 6e+06, 
+6500000, 7e+06, 7500000, 8e+06), xmax = c(-3e+06, -2500000, -2e+06, 
+-1500000, -1e+06, -5e+05, 0, 5e+05, 1e+06, 1500000, 2e+06, 2500000, 
+3e+06, 3500000, 4e+06, 4500000, 5e+06, 5500000, 6e+06, 6500000, 
+7e+06, 7500000, 8e+06, 8500000), ymin = c(0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(1L, 
+0L, 0L, 0L, 0L, 8L, 38130L, 200406L, 352L, 67L, 12L, 5L, 0L, 
+0L, 2L, 0L, 0L, 1L, 0L, 0L, 1L, 0L, 0L, 1L)), class = "data.frame", row.names = c(NA, 
+-24L)), vnam = "mrentabilidad_annual")
+```
+
+</div>
+</div>
+
+
+- Note that the following possible outlier values were detected: \"-3189342.83\", \"-817834.58\", \"-771281.4\", \"-708413.72\", \"-573761.34\", \"-532284.58\", \"-530234.24\", \"-509351.88\", \"-503329.48\", \"-466326.06\" (20710 additional values omitted). 
+
+
+
+---
+
+## mcomisiones
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-------------------------------------------------
+Feature                                    Result
+------------------------- -----------------------
+Variable type                             numeric
+
+Number of missing obs.                    0 (0 %)
+
+Number of unique values                    152462
+
+Median                                     773.52
+
+1st and 3rd quartiles             242.28; 1682.37
+
+Min. and max.               -281818.04; 398536.69
+-------------------------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-10-mcomisiones', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(-3e+05, -250000, -2e+05, 
+-150000, -1e+05, -50000, 0, 50000, 1e+05, 150000, 2e+05, 250000, 
+3e+05, 350000), xmax = c(-250000, -2e+05, -150000, -1e+05, -50000, 
+0, 50000, 1e+05, 150000, 2e+05, 250000, 3e+05, 350000, 4e+05), 
+    ymin = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(1L, 
+    0L, 0L, 2L, 0L, 21622L, 217324L, 27L, 5L, 1L, 2L, 1L, 0L, 
+    1L)), class = "data.frame", row.names = c(NA, -14L)), vnam = "mcomisiones")
+```
+
+</div>
+</div>
+
+
+- Note that the following possible outlier values were detected: \"-281818.04\", \"-137463.11\", \"-103016.79\", \"-49154.37\", \"-29682.38\", \"-25487.35\", \"-24659.36\", \"-22126.38\", \"-21734.14\", \"-20054.26\" (6751 additional values omitted). 
+
+
+
+---
+
+## mactivos\_margen
+
+<div class = "row">
+<div class = "col-lg-8">
+
+-------------------------------------------------
+Feature                                    Result
+------------------------- -----------------------
+Variable type                             numeric
+
+Number of missing obs.                    0 (0 %)
+
+Number of unique values                    176348
+
+Median                                    -459.47
+
+1st and 3rd quartiles                 -1572.09; 0
+
+Min. and max.               -587532.54; 211352.13
+-------------------------------------------------
+
+
+</div>
+<div class = "col-lg-4">
+```{r 'Var-11-mactivos-margen', echo=FALSE, fig.width=4, fig.height=3, message=FALSE, warning=FALSE}
+ggAggHist(data = structure(list(xmin = c(-6e+05, -550000, -5e+05, 
+-450000, -4e+05, -350000, -3e+05, -250000, -2e+05, -150000, -1e+05, 
+-50000, 0, 50000, 1e+05, 150000, 2e+05), xmax = c(-550000, -5e+05, 
+-450000, -4e+05, -350000, -3e+05, -250000, -2e+05, -150000, -1e+05, 
+-50000, 0, 50000, 1e+05, 150000, 2e+05, 250000), ymin = c(0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ymax = c(1L, 
+0L, 0L, 0L, 0L, 0L, 2L, 1L, 0L, 8L, 55L, 183614L, 55264L, 30L, 
+9L, 1L, 1L)), class = "data.frame", row.names = c(NA, -17L)), 
+    vnam = "mactivos_margen")
+```
+
+</div>
+</div>
+
+
+- Note that the following possible outlier values were detected: \"-587532.54\", \"-286563.6\", \"-270948.12\", \"-227333.1\", \"-135234.32\", \"-125175.52\", \"-120275.24\", \"-114541.23\", \"-113289.92\", \"-108450.2\" (28647 additional values omitted). 
+
+
+
+---
+

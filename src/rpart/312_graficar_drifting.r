@@ -8,6 +8,7 @@ require("data.table")
 #cargo los datasets que voy a comparar
 setwd("~/buckets/b1/crudoB/" )  #establezco la carpeta donde voy a trabajar
 
+setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
 
 datasetA  <- fread( "./datasetsOri/paquete_premium_202009.csv" )
 datasetB  <- fread( "./datasetsOri/paquete_premium_202011.csv" )
