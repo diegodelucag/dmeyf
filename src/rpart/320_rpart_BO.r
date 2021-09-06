@@ -25,7 +25,6 @@ switch ( Sys.info()[['sysname']],
          Linux   = { directory.root   <-  "~/buckets/b1/crudo/" }  #Entorno Google Cloud
        )
 #defino la carpeta donde trabajo
-setwd( directory.root )
 setwd( "C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF" )
 
 

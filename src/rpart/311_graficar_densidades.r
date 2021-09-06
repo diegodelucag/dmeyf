@@ -6,7 +6,6 @@ require("data.table")
 
 
 #Aqui comienza el programa
-setwd("~/buckets/b1/crudoB/")
 getwd()
 setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
 
