@@ -45,7 +45,6 @@ gc(verbose = FALSE)
 library( "data.table")
 library("ggplot2")
 
-carpeta_datasetsOri <-  "../../../datasetsOri/"
 carpeta_datasetsOri <-  "C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF/datasetsOri/"
 septiembre <- "paquete_premium_202009.csv"
 
