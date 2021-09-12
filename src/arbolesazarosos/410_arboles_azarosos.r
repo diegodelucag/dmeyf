@@ -6,9 +6,8 @@ gc()   #Garbage Collection
 
 require("data.table")
 require("rpart")
-
+getwd()
 #Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/crudoB/")  #Establezco el Working Directory
 setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")  #Establezco el Working Directory
 
 #cargo los datos donde entreno
