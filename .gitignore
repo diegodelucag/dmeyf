@@ -4,3 +4,4 @@
 .Ruserdata
 *.ini
 src/monday/cache/desktop.ini
+*.ini

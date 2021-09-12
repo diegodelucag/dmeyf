@@ -9,6 +9,7 @@ require("rpart")
 
 #Aqui se debe poner la carpeta de la computadora local
 setwd("~/buckets/b1/crudoB/")  #Establezco el Working Directory
+setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")  #Establezco el Working Directory
 
 #cargo los datos donde entreno
 dtrain  <- fread("./datasetsOri/paquete_premium_202009.csv")
@@ -26,6 +27,7 @@ num_trees         <-  10    #voy a generar 10 arboles
 feature_fraction  <-   0.5  #entreno cada arbol con solo 50% de las variables variables
 
 set.seed(102191) #Establezco la semilla aleatoria
+set.seed(101504) #Establezco la semilla aleatoria
 
 #inicializo en CERO el vector de las probabilidades en dapply
 #Aqui es donde voy acumulando, sumando, las probabilidades
