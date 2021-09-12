@@ -18,9 +18,8 @@ require("parallel")
 require("DiceKriging")
 require("mlrMBO")
 
-
 #defino la carpeta donde trabajo
-setwd( "~/buckets/b1/crudoB/"  )
+setwd( "C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF/"  )
 
 
 kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
@@ -28,7 +27,7 @@ kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es pa
 kscript           <- "560_ranger_BO"
 karch_generacion  <- "./datasetsOri/paquete_premium_202009.csv"
 karch_aplicacion  <- "./datasetsOri/paquete_premium_202011.csv"
-kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  250   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 hs  <- makeParamSet(
           makeIntegerParam("num.trees" ,        lower=  2L  , upper=  500L),  #la letra L al final significa ENTERO
@@ -36,7 +35,7 @@ hs  <- makeParamSet(
           makeIntegerParam("min.node.size" ,    lower=  1L  , upper=  500L),
           makeIntegerParam("mtry" ,             lower=  2L  , upper=   50L))
 
-ksemilla_azar  <- 102191  #Aqui poner la propia semilla
+ksemilla_azar  <- 101504  #Aqui poner la propia semilla
 #------------------------------------------------------------------------------
 #Funcion que lleva el registro de los experimentos
 
