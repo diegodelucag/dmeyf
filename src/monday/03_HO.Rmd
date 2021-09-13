@@ -159,7 +159,8 @@ library(rpart)
 
 modelo_rpart <- function (train, test, cp =  0, ms = 20, mb = 1, md = 30) { 
   
-    modelo <- rpart(clase_binaria ~ ., data = train, 
+    modelo <- rpart(clase_binaria ~ ., 
+                    data = train, 
                     xval=0, 
                     cp=cp, 
                     minsplit=ms, 
