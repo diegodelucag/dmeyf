@@ -10,7 +10,7 @@ gc()
 require("data.table")
 require("lightgbm")
 
-setwd("~/buckets/b1/crudoB" )  #establezco la carpeta donde voy a trabajar
+setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF" )  #establezco la carpeta donde voy a trabajar
 
 #cargo el dataset
 dataset  <- fread("./datasetsOri/paquete_premium_202009.csv")
@@ -31,6 +31,7 @@ dtrain  <- lgb.Dataset( data=  data.matrix(  dataset[ , campos_buenos, with=FALS
 #Dadme un punto de apoyo y movere el mundo, Arquimedes
 modelo  <- lightgbm( data= dtrain,
                      params= list( objective= "binary",
+                                   num_iterations = 100,
                                    max_bin= 15,
                                    min_data_in_leaf= 4000,
                                    learning_rate= 0.05 )  )

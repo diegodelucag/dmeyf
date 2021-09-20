@@ -35,6 +35,7 @@ switch ( Sys.info()[['sysname']],
 
 #defino la carpeta donde trabajo
 setwd( directory.root )
+setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF/")
 
 
 
