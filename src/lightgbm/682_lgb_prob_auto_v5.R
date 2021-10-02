@@ -36,7 +36,7 @@ require("mlrMBO")
 #setwd( directory.root )
 
 setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
-getwd()
+
 
 kexperimento  <- NA   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
@@ -47,15 +47,15 @@ kBO_iter    <-  200   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
-          makeNumericParam("learning_rate",    lower= 0.02 , upper=    0.055),
-          makeNumericParam("feature_fraction", lower= 0.2  , upper=    0.9),
-          makeIntegerParam("min_data_in_leaf", lower= 2000    , upper= 4000),
-          makeIntegerParam("num_leaves",       lower=16L   , upper= 600L),
-          makeIntegerParam("max_depth",       lower=6L   , upper= 12L),
-          makeNumericParam("min_gain_to_split", lower= 0.25  , upper=  1.0),
-          makeNumericParam("lambda_l1", lower= 0.5  , upper=    2.2),
-          makeNumericParam("lambda_l2", lower= 0.0  , upper=    1.1)
-        )
+  makeNumericParam("learning_rate",    lower= 0.02 , upper=    0.055),
+  makeNumericParam("feature_fraction", lower= 0.2  , upper=    0.9),
+  makeIntegerParam("min_data_in_leaf", lower= 2000    , upper= 4000),
+  makeIntegerParam("num_leaves",       lower=16L   , upper= 600L),
+  makeIntegerParam("max_depth",       lower=6L   , upper= 12L),
+  makeNumericParam("min_gain_to_split", lower= 0.25  , upper=  1.0),
+  makeNumericParam("lambda_l1", lower= 0.5  , upper=    2.2),
+  makeNumericParam("lambda_l2", lower= 0.0  , upper=    1.1)
+)
 
 campos_malos  <- c()   #aqui se deben cargar todos los campos culpables del Data Drifting
 
@@ -139,7 +139,7 @@ EstimarGanancia_lightgbm  <- function( x )
                           metric= "custom",
                           first_metric_only= TRUE,
                           boost_from_average= TRUE,
-                          feature_pre_filter= FALSE, #fALSE= DONT ignore the features that are unsplittable based on min_data_in_leaf
+                          feature_pre_filter= FALSE,
                           verbosity= -100,
                           seed= 999983,
                        #   max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
@@ -149,13 +149,7 @@ EstimarGanancia_lightgbm  <- function( x )
                           max_bin= 255,            #por ahora, lo dejo fijo
                           num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
-                      #interaction_constraints 
-                     # feature_fraction_seed= 101504, #random seed for feature_fraction
-                    #  extra_trees= TRUE, #when evaluating node splits LightGBM will check only one randomly-chosen threshold for each feature
-                    #  extra_seed= 101504 #random seed for selecting thresholds when extra_trees is true
-                      
-                      
-                      )
+                        )
 
   #el parametro discolo, que depende de otro
   param_variable  <- list(  early_stopping_rounds= as.integer(50 + 5/x$learning_rate) )
@@ -202,15 +196,8 @@ EstimarGanancia_lightgbm  <- function( x )
 
      prediccion  <- predict( modelo, data.matrix( dapply[  , campos_buenos, with=FALSE]) )
 
-     
-     #genero el prediccion
-     #fwrite( prediccion, 
-    #         file= paste0(kpred,"pred_", GLOBAL_iteracion, ".csv" ),
-    #         sep= "," )
-     
      Predicted  <- as.integer( prediccion > param_completo$prob_corte )
 
-     
      entrega  <- as.data.table( list( "numero_de_cliente"= dapply$numero_de_cliente, 
                                       "Predicted"= Predicted)  )
 
@@ -237,8 +224,6 @@ kbayesiana  <- paste0("./work/E",  kexperimento, "_", kscript, ".RDATA" )
 klog        <- paste0("./work/E",  kexperimento, "_", kscript, ".txt" )
 kimp        <- paste0("./work/E",  kexperimento, "_", kscript, "_" )
 kkaggle     <- paste0("./kaggle/E",kexperimento, "_", kscript, "_" )
-#kpred       <- paste0("./work/E",  kexperimento, "_", kscript, "_" )
-
 
 GLOBAL_ganancia_max  <-  -Inf
 GLOBAL_iteracion  <- 0
