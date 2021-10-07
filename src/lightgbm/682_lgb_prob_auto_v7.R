@@ -27,11 +27,11 @@ require("mlrMBO")
 
 #para poder usarlo en la PC y en la nube sin tener que cambiar la ruta
 #cambiar aqui las rutas en su maquina
-switch ( Sys.info()[['sysname']],
-         Windows = { directory.root  <-  "M:\\" },   #Windows
-         Darwin  = { directory.root  <-  "~/dm/" },  #Apple MAC
-         Linux   = { directory.root  <-  "~/buckets/b1/" } #Google Cloud
-       )
+# switch ( Sys.info()[['sysname']],
+#          Windows = { directory.root  <-  "M:\\" },   #Windows
+#          Darwin  = { directory.root  <-  "~/dm/" },  #Apple MAC
+#          Linux   = { directory.root  <-  "~/buckets/b1/" } #Google Cloud
+#        )
 #defino la carpeta donde trabajo
 setwd( "C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF" )
 
@@ -46,8 +46,8 @@ kBO_iter    <-  150   #cantidad de iteraciones de la Optimizacion Bayesiana
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
          makeNumericParam("learning_rate",    lower= 0.01 , upper=    0.1),
-         makeNumericParam("feature_fraction", lower= 0.2  , upper=    1.0),
-         makeIntegerParam("min_data_in_leaf", lower= 0    , upper= 8000),
+         makeNumericParam("feature_fraction", lower= 0.2  , upper=    0.6),
+         makeIntegerParam("min_data_in_leaf", lower= 3500    , upper= 6000),
          makeIntegerParam("num_leaves",       lower=16L   , upper= 1024L)
         )
 
@@ -136,11 +136,10 @@ EstimarGanancia_lightgbm  <- function( x )
                           feature_pre_filter= FALSE,
                           verbosity= -100,
                           seed= 999983,
-                          max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 31,            #por ahora, lo dejo fijo
+                          #lambda_l1= 0.0,         #por ahora, lo dejo fijo
+                          #lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          max_bin= 63,            #por ahora, lo dejo fijo
                           num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
                         )
