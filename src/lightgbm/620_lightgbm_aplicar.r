@@ -5,7 +5,7 @@ gc()             #garbage collection
 require("data.table")
 require("lightgbm")
 
-setwd("~/buckets/b1/")
+setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF" )  #establezco la carpeta donde voy a trabajar
 
 #cargo el dataset donde voy a entrenar
 dataset  <- fread("./datasetsOri/paquete_premium_202009.csv")
