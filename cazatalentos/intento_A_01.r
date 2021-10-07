@@ -94,7 +94,6 @@ veredicto  <- gimnasio_veredicto( id_mejor )
 
 veredicto
 
-
 #El veredicto da que la estrategia seguida por el cazatalentos fue exitosa para este caso
 #Le acerto al verdadero_mejor
 
