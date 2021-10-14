@@ -40,17 +40,29 @@ modelo  <- lightgbm( data= dtrain,
                                    )  )
 
 
+tb_importancia  <- lgb.importance( modelo )
+fwrite( tb_importancia, 
+        file= paste0("imp_777", ".txt"),
+        sep="\t" )
+
 #cargo el dataset donde aplico el modelo
 dapply  <- fread("./datasetsOri/paquete_premium_202011.csv")
 
 #aplico el modelo a los datos nuevos, dapply
 prediccion  <- predict( modelo,  data.matrix( dapply[  , campos_buenos, with=FALSE]))
 
+probabilidades<-as.data.table( list( "numero_de_cliente"= dapply[  , numero_de_cliente],
+                                     "Predicted"= as.numeric(prediccion) ) ) #genero la salida
+
+fwrite( probabilidades, 
+        file= "./modelitos/probabilidades777.csv",
+        sep=  "," )
+
 #la probabilidad de corte ya no es 0.025
-entrega  <- as.data.table( list( "numero_de_cliente"= dapply[  , numero_de_cliente],
-                                 "Predicted"= as.numeric(prediccion > 0.038) ) ) #genero la salida
+#entrega  <- as.data.table( list( "numero_de_cliente"= dapply[  , numero_de_cliente],
+#                                 "Predicted"= as.numeric(prediccion > 0.038) ) ) #genero la salida
 
 #genero el archivo para Kaggle
-fwrite( entrega, 
-        file= "./kaggle/con_los_economistas_NO.csv",
-        sep=  "," )
+# fwrite( entrega, 
+#         file= "./kaggle/con_los_economistas_NO.csv",
+#         sep=  "," )

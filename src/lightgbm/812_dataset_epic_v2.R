@@ -18,24 +18,16 @@ require("lightgbm")
 
 
 #defino la carpeta donde trabajo
-directory.root  <-  "~/buckets/b1/"  #Google Cloud
-setwd( directory.root )
+#directory.root  <-  "~/buckets/b1/"  #Google Cloud
+#setwd( directory.root )
 
-setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
-
+setwd("/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v001"   #Muy importante, ir cambiando la version
+palancas$version  <- "v007"   #Muy importante, ir cambiando la version
 
-palancas$variablesdrift  <- c("ccajas_transacciones", "Master_mpagominimo" )   #aqui van las columnas que se quieren eliminar
-
-#palancas$variablesdrift  <- c ("internet","ctarjeta_visa_descuentos" , "mtarjeta_visa_descuentos" , "ctarjeta_master_descuentos" ,
-  "mtarjeta_master_descuentos" , "cextraccion_autoservicio" , "ccajas_otras" , "catm_trx" , "matm_other" ,
-  "tmobile_app" , "cmobile_app_trx" , "Master_Finiciomora" , "Master_mconsumosdolares" , "Master_madelantodolares" ,
-  "Master_cconsumos","Master_cadelantosefectivo" , "Visa_Finiciomora" , "Visa_msaldodolares" ,
-  "Visa_mpagado" , "Visa_mpagominimo")
-
+palancas$variablesdrift  <- c("ccajas_transacciones") #, "Master_mpagominimo" )   #aqui van las columnas que se quieren eliminar
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
@@ -265,7 +257,7 @@ AgregarVariables  <- function( dataset )
   dataset[ , mv_mconsumototal        := rowSums( cbind( Master_mconsumototal,  Visa_mconsumototal) , na.rm=TRUE ) ]
   dataset[ , mv_cconsumos            := rowSums( cbind( Master_cconsumos,  Visa_cconsumos) , na.rm=TRUE ) ]
   dataset[ , mv_cadelantosefectivo   := rowSums( cbind( Master_cadelantosefectivo,  Visa_cadelantosefectivo) , na.rm=TRUE ) ]
-  #dataset[ , mv_mpagominimo          := rowSums( cbind( Master_mpagominimo,  Visa_mpagominimo) , na.rm=TRUE ) ]
+  dataset[ , mv_mpagominimo          := rowSums( cbind( Master_mpagominimo,  Visa_mpagominimo) , na.rm=TRUE ) ]
 
   #a partir de aqui juego con la suma de Mastercard y Visa
   dataset[ , mvr_Master_mlimitecompra:= Master_mlimitecompra / mv_mlimitecompra ]
@@ -283,25 +275,104 @@ AgregarVariables  <- function( dataset )
   dataset[ , mvr_mpagospesos         := mv_mpagospesos / mv_mlimitecompra ]
   dataset[ , mvr_mpagosdolares       := mv_mpagosdolares / mv_mlimitecompra ]
   dataset[ , mvr_mconsumototal       := mv_mconsumototal  / mv_mlimitecompra ]
- # dataset[ , mvr_mpagominimo         := mv_mpagominimo  / mv_mlimitecompra ]
+  dataset[ , mvr_mpagominimo         := mv_mpagominimo  / mv_mlimitecompra ]
 
---#Aqui debe usted agregar sus propias nuevas variables-------------------------
+  #Aqui debe usted agregar sus propias nuevas variables
+  
+  cr_transacciones <- c("ctarjeta_debito_transacciones","ctarjeta_visa_transacciones","ctarjeta_master_transacciones",
+                        "ccuenta_debitos_automaticos","cpagodeservicios","cpagomiscuentas","ccajeros_propios_descuentos",
+                        "ctarjeta_visa_descuentos","ccomisiones_mantenimiento","ccomisiones_otras","cforex",
+                        "ctransferencias_recibidas","ctransferencias_emitidas","cextraccion_autoservicio",
+                        "ccheques_depositados","ccheques_emitidos","ccheques_depositados_rechazados","ccheques_emitidos_rechazados","ccallcenter_transacciones","chomebanking_transacciones",
+                        "ccajas_transacciones","ccajas_consultas","ccajas_depositos","ccajas_extracciones",
+                        "ccajas_otras","catm_trx","catm_trx_other","ctrx_quarter")
+  
+  cr_ingresos <- c("mpayroll","mpayroll2","mcajeros_propios_descuentos",
+                   "mtarjeta_master_descuentos","mtransferencias_recibidas",
+                   "mcheques_depositados","mcheques_depositados_rechazados")
+  
+  cr_egresos <- c("mautoservicio","mtarjeta_visa_consumo","mtarjeta_master_consumo","mcuenta_debitos_automaticos",
+                  "mttarjeta_visa_debitos_automaticos","mttarjeta_master_debitos_automaticos",
+                  "mpagodeservicios","mpagomiscuentas","mcomisiones_mantenimiento","mcomisiones_otras",
+                  "mtransferencias_emitidas","mextraccion_autoservicio","mcheques_emitidos")
+  
+  cr_gastos<- c("mautoservicio","mtarjeta_visa_consumo","mtarjeta_master_consumo",
+                "mcuenta_debitos_automaticos","mttarjeta_visa_debitos_automaticos",
+                "mttarjeta_master_debitos_automaticos","mpagodeservicios","mpagomiscuentas",
+                "mcomisiones_mantenimiento","mcomisiones_otras")
   
   
+  cr_consumo_tarjeta <- c("mautoservicio","mtarjeta_visa_consumo","mtarjeta_master_consumo")
+  
+  cr_pasivos<- c("mprestamos_personales","mprestamos_prendarios","mprestamos_hipotecarios","mcheques_emitidos_rechazados")
+  
+  cr_act_totales <- c("mcuentas_saldo","mplazo_fijo_dolares","mplazo_fijo_pesos","minversion1_pesos",
+                      "minversion1_dolares","minversion2","mdescubierto_preacordado")
+  
+  cr_act_usd <- c("mcaja_ahorro_dolares","mplazo_fijo_dolares","minversion1_dolares")
+  
+  cr_lim_tarj <- c("Master_mlimitecompra","Visa_mlimitecompra")
+  
+  cr_cant_prod <- c("tcuentas","ccuenta_corriente","ccaja_ahorro","ctarjeta_debito","ctarjeta_visa","ctarjeta_master",
+                    "cprestamos_personales","cprestamos_prendarios","cprestamos_hipotecarios","cplazo_fijo",
+                    "cinversion1","cinversion2","cseguro_vida","cseguro_auto","cseguro_vivienda",
+                    "cseguro_accidentes_personales","ccaja_seguridad","ctarjeta_visa_debitos_automaticos",
+                    "ctarjeta_master_debitos_automaticos","tcallcenter","thomebanking")
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  dataset[ , cr_tx_total := rowSums(.SD), .SDcols = cr_transacciones ]
+  dataset[ , cr_consumo_mes:= (mautoservicio  + mtarjeta_visa_consumo +  mtarjeta_master_consumo + mcuenta_debitos_automaticos +mttarjeta_visa_debitos_automaticos + mttarjeta_master_debitos_automaticos + mpagodeservicios + mpagomiscuentas + mextraccion_autoservicio +Master_cadelantosefectivo+Visa_madelantopesos)/( mpayroll + mtransferencias_recibidas - mtransferencias_emitidas +mcheques_depositados - mcheques_emitidos)]
+  dataset[, cr_ing_total := rowSums(.SD), .SDcols = cr_ingresos]
+  dataset[, cr_eg_total := rowSums(.SD), .SDcols = cr_egresos]
+  dataset[, cr_gastos := rowSums(.SD), .SDcols = cr_gastos]
+  dataset[, cr_consumo_tarjeta := rowSums(.SD), .SDcols = cr_consumo_tarjeta]
+  dataset[, cr_constarj_gastos := cr_consumo_tarjeta/cr_gastos]
+  dataset[, cr_pasivos := rowSums(.SD), .SDcols = cr_pasivos]
+  dataset[, cr_activos := rowSums(.SD), .SDcols = cr_act_totales]
+  dataset[, cr_activos_usd := rowSums(.SD), .SDcols = cr_act_usd]
+  dataset[, cr_lim_tarj := rowSums(.SD), .SDcols = cr_lim_tarj]
+  dataset[ , cr_rt_Visa_mlimitecompra:= Visa_msaldototal/Visa_mlimitecompra ]
+  dataset[ , cr_rt_Visa_msaldo:= Visa_msaldototal - Visa_mconsumototal ]
+  dataset[ , cr_rt_Visa_mlimitecompra2:= (Visa_mpagado - Visa_msaldototal)/Visa_mlimitecompra  ]
+  dataset[ , cr_rt_Visa_pago_min:= Visa_mpagominimo/ Visa_mlimitecompra  ]
+  dataset[ , cr_rt_Master_mlimitecompra:= Master_msaldototal /Master_mlimitecompra  ]
+  dataset[ , cr_rt_Master_msaldo:= Master_msaldototal - Master_mconsumototal ]
+  dataset[ , cr_rt_Master_mlimitecompra2:= (Master_mpagado - Master_msaldototal)/Master_mlimitecompra  ]
+  dataset[ , cr_rt_Master_pago_min:= Master_mpagominimo/ Master_mlimitecompra ]
+  dataset[, cr_cant_prod := rowSums(.SD), .SDcols = cr_cant_prod]
+  dataset[ , cr_cant_transacciones:= ctarjeta_debito_transacciones + ctarjeta_visa_transacciones + ctarjeta_master_transacciones +ccuenta_debitos_automaticos  + ctarjeta_visa_debitos_automaticos +ctarjeta_master_debitos_automaticos + cpagodeservicios + cpagomiscuentas + Master_cconsumos  ]
+  dataset[ , cr_cant_transf:= ctransferencias_recibidas - ctransferencias_emitidas + ccheques_depositados - ccheques_emitidos  ]
+  dataset[ , cr_ing_edad:= (mpayroll+mpayroll2)/cliente_edad ]
+  dataset[ , cr_prod_ant:= cr_cant_prod/cliente_antiguedad ]
+  dataset[ , cr_desc_pay:= mdescubierto_preacordado/mpayroll ]
+  dataset[ , cr_totsaldo_payroll:= mcuentas_saldo/mpayroll ]
+  dataset[ , cr_satisfaccion:= ccallcenter_transacciones + ccajas_transacciones + ccajas_consultas  ]
+  dataset[ , cr_ing_egr:= cr_ing_total * cr_eg_total ]
+  dataset[ , cr_egr_act:= cr_eg_total * cr_activos ]
+  dataset[ , cr_egr_pay:= cr_eg_total *  (mpayroll+mpayroll2) ]
+  dataset[ , cr_vis_egr:= Visa_mconsumototal * cr_eg_total ]
+  dataset[ , cr_ah_pay:= cr_activos * cr_pasivos ]
+  dataset[ , cr_eg_trx:= cr_eg_total * ctrx_quarter ]
+  dataset[ , cr_eg_prod:= cr_eg_total * cr_cant_prod ]
+  dataset[, cr_trx_constarj:= ctrx_quarter * cr_consumo_tarjeta]
+  dataset[, cr_constarj_ing:= cr_consumo_tarjeta * cr_ing_total]
+  dataset[, cr_constarj_cprod:= cr_consumo_tarjeta * cr_cant_prod]
+  dataset[, cr_trx_ing:= ctrx_quarter * cr_ing_total ]
+  dataset[, cr_eg_constarj:= cr_eg_total * cr_consumo_tarjeta ]
+  dataset[, cr_trx_ing:= cr_ing_total * cr_gastos ]
+  dataset[, cr_trx_gastos:= ctrx_quarter*cr_gastos ]
+  dataset[, cr_mpayroll_descpay:= mpayroll*cr_desc_pay ]
+  dataset[, cr_saldopayroll_desc_pay:= cr_totsaldo_payroll*cr_desc_pay ]
+  dataset[, cr_cprod_desc_pay:= cr_cant_prod*cr_desc_pay ]
+  dataset[, cr_cprod_pasivos:= cr_pasivos*cr_cant_prod ]
+  dataset[, toda_vs_todas:= (cr_eg_total*ctrx_quarter*cr_cant_prod*cr_consumo_tarjeta*
+            cr_ing_total*cr_gastos*mpayroll*cr_desc_pay*cr_totsaldo_payroll*cpayroll_trx*
+            Visa_status*cr_pasivos*mcuentas_saldo*ctarjeta_visa_transacciones*
+            cr_pasivos*cliente_edad) ]
 
+  
+  
+  
   #valvula de seguridad para evitar valores infinitos
   #paso los infinitos a NULOS
   infinitos      <- lapply(names(dataset),function(.name) dataset[ , sum(is.infinite(get(.name)))])
@@ -530,13 +601,11 @@ CanaritosImportancia  <- function( dataset )
   dataset[ , clase01:= ifelse( clase_ternaria=="CONTINUA", 0, 1 ) ]
 
   for( i  in 1:(ncol(dataset)/5))  dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset))]
-  #le agrega 30 columnas canaritos
 
   campos_buenos  <- setdiff( colnames(dataset), c("clase_ternaria","clase01" ) )
 
   azar  <- runif( nrow(dataset) )
   entrenamiento  <-  dataset[ , foto_mes>= 202001 &  foto_mes<= 202010 &  foto_mes!=202006 & ( clase01==1 | azar < 0.10 ) ]
-  #filtra columnas: quita campos malos mas clase01, clase ternaria, fold, entrenamiento, foto_mes
 
   dtrain  <- lgb.Dataset( data=    data.matrix(  dataset[ entrenamiento==TRUE, campos_buenos, with=FALSE]),
                           label=   dataset[ entrenamiento==TRUE, clase01],
@@ -574,7 +643,7 @@ CanaritosImportancia  <- function( dataset )
                         verbose= -100 )
 
   tb_importancia  <- lgb.importance( model= modelo )
-  tb_importancia[  , pos := .I ] #devuelve una columna con el numero de posición de cada variable
+  tb_importancia[  , pos := .I ]
   
   fwrite( tb_importancia, file="./work/impo.txt", sep="\t" )
   

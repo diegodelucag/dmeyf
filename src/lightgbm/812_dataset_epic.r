@@ -21,11 +21,13 @@ require("lightgbm")
 directory.root  <-  "~/buckets/b1/"  #Google Cloud
 setwd( directory.root )
 
+setwd("/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
+
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
 palancas$version  <- "v007"   #Muy importante, ir cambiando la version
 
-palancas$variablesdrift  <- c("ccajas_transacciones", "Master_mpagominimo" )   #aqui van las columnas que se quieren eliminar
+palancas$variablesdrift  <- c("ccajas_transacciones") #, "Master_mpagominimo" )   #aqui van las columnas que se quieren eliminar
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
