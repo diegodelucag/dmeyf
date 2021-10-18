@@ -12,7 +12,7 @@ require("data.table")
 setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
 #setwd("~/buckets/b1/crudoB/" )
 
-version  <- "v002"  #cambiar cada vez, asi se tiene versionado del dataset
+version  <- "v001"  #cambiar cada vez, asi se tiene versionado del dataset
 
 dataset  <- fread( "./datasets/dataset_epic_simple_v001.csv.gz" )
 
@@ -35,9 +35,9 @@ for( archivo  in archivos )
   darchivo  <- fread( paste0("./modelitos/", archivo ) )
   dataset  <- merge( dataset, darchivo, by=c("numero_de_cliente","foto_mes") )
 }
-View(head(darchivo))
+#View(head(darchivo))
 gc()
 
 fwrite( dataset,
-        file=paste0( "./datasets/dataset_stacking_modelitos&stacks", version, ".csv.gz"),
+        file=paste0( "./datasets/dataset_stacking_totalvars", version, ".csv.gz"),
         sep="," )
