@@ -365,10 +365,10 @@ AgregarVariables  <- function( dataset )
   dataset[, cr_saldopayroll_desc_pay:= cr_totsaldo_payroll/cr_desc_pay ]
   dataset[, cr_cprod_desc_pay:= cr_cant_prod/cr_desc_pay ]
   dataset[, cr_cprod_pasivos:= cr_pasivos/cr_cant_prod ]
-  dataset[, engagement:= (cr_eg_total*ctrx_quarter*cr_cant_prod*cr_consumo_tarjeta*
-                               cr_ing_total*cr_gastos*mpayroll*cr_desc_pay*cr_totsaldo_payroll*cpayroll_trx*
-                               Visa_status*cr_pasivos*mcuentas_saldo*ctarjeta_visa_transacciones*
-                               cr_pasivos*cliente_edad) ]
+  # dataset[, engagement:= (cr_eg_total*ctrx_quarter*cr_cant_prod*cr_consumo_tarjeta*
+  #                              cr_ing_total*cr_gastos*mpayroll*cr_desc_pay*cr_totsaldo_payroll*cpayroll_trx*
+  #                              Visa_status*cr_pasivos*mcuentas_saldo*ctarjeta_visa_transacciones*
+  #                              cr_pasivos*cliente_edad) ]
   
   
 
