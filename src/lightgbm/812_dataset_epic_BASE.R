@@ -27,9 +27,9 @@ setwd("G:/Mi unidad/Maestria_Data_Science/DM_EyF/dmeyf")
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v001"   #Muy importante, ir cambiando la version
+palancas$version  <- "v0001"   #Muy importante, ir cambiando la version
 
-palancas$variablesdrift  <- c("ccajas_transacciones") #, "Master_mpagominimo" )   #aqui van las columnas que se quieren eliminar
+palancas$variablesdrift  <- c()   #aqui van las columnas que se quieren eliminar
 
 palancas$corregir <-  TRUE    # TRUE o FALSE
 
@@ -573,12 +573,7 @@ CanaritosImportancia  <- function( dataset )
 correr_todo  <- function( palancas )
 {
   #cargo el dataset ORIGINAL
-  dataset1  <- fread( "./datasetsOri/paquete_premium_202009.csv")
-  dataset2  <- fread( "./datasetsOri/paquete_premium_202011.csv")
-
-  dataset   <- rbind( dataset1, dataset2 )
-  rm( dataset1, dataset2 )
-  gc()
+  dataset  <- fread( "./datasetsOri/paquete_premium.csv.gz")
 
   setorder(  dataset, numero_de_cliente, foto_mes )  #ordeno el dataset
 
@@ -623,7 +618,7 @@ correr_todo  <- function( palancas )
 
   #Grabo el dataset
   fwrite( dataset,
-          paste0( "./datasets/dataset_epic_simple_", palancas$version, ".csv.gz" ),
+          paste0( "./datasets/dataset_epic_", palancas$version, ".csv.gz" ),
           logical01 = TRUE,
           sep= "," )
 
