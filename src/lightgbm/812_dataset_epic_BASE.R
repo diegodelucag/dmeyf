@@ -27,7 +27,7 @@ setwd("G:/Mi unidad/Maestria_Data_Science/DM_EyF/dmeyf")
 
 palancas  <- list()  #variable con las palancas para activar/desactivar
 
-palancas$version  <- "v0001"   #Muy importante, ir cambiando la version
+palancas$version  <- "v0000"   #Muy importante, ir cambiando la version
 
 palancas$variablesdrift  <- c()   #aqui van las columnas que se quieren eliminar
 
