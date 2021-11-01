@@ -26,12 +26,13 @@ palancas$version  <- "v951_0000"   #Muy importante, ir cambiando la version
 
 palancas$variablesdrift  <- c()   #aqui van las columnas que se quieren eliminar
 
+#ds base
 palancas$corregir <-  TRUE    # TRUE o FALSE
-
+#ds 0001
 palancas$nuevasvars <-  FALSE  #si quiero hacer Feature Engineering manual
-
+#ds 0002
 palancas$dummiesNA  <-  FALSE #La idea de Santiago Dellachiesa
-
+#ds 0003
 palancas$lag1   <- FALSE    #lag de orden 1
 palancas$delta1 <- FALSE    # campo -  lag de orden 1 
 palancas$lag2   <- FALSE
@@ -44,7 +45,7 @@ palancas$lag5   <- FALSE
 palancas$delta5 <- FALSE
 palancas$lag6   <- FALSE
 palancas$delta6 <- FALSE
-
+#ds 0004
 palancas$promedio3  <- FALSE  #promedio  de los ultimos 3 meses
 palancas$promedio6  <- FALSE
 
@@ -56,10 +57,10 @@ palancas$maximo6  <- FALSE
 
 palancas$ratiomax3   <- FALSE   #La idea de Daiana Sparta
 palancas$ratiomean6  <- FALSE   #Un derivado de la idea de Daiana Sparta
-
+#ds 0005
 palancas$tendencia6  <- FALSE    #Great power comes with great responsability
 
-
+#ds 0006
 palancas$canaritosimportancia  <- FALSE  #si me quedo solo con lo mas importante de canaritosimportancia
 
 

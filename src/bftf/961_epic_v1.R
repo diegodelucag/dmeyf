@@ -56,15 +56,15 @@ ktest_mes_desde  <- 202011
 ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
 ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
-ktrain_mes_desde    <- 201901
+ktrain_mes_desde    <- 201801
 ktrain_meses_malos  <- c(202006 )  #meses que quiero excluir del entrenamiento
 
 
 kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersampling
-kgen_mes_desde    <- 201901
+kgen_mes_desde    <- 201801
 
 
-kBO_iter    <-  100   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  300   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 
