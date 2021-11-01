@@ -34,19 +34,19 @@ require("mlrMBO")
 switch ( Sys.info()[['sysname']],
          Windows = { directory.root  <-  "M:\\" },   #Windows
          Darwin  = { directory.root  <-  "~/dm/" },  #Apple MAC
-         Linux   = { directory.root  <-  "~/buckets/buko_yoni666/" } #Google Cloud
+         Linux   = { directory.root  <-  "~/buckets/b1/" } #Google Cloud
        )
 #defino la carpeta donde trabajo
 setwd( directory.root )
-setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
+#setwd("C:/Users/Diego/diegodelucag_gmail/Maestria_Data_Science/DM_EyF")
 
 
 
-kexperimento  <- 3000   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 5000   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "961_epic"
 
-karch_dataset    <- "./datasets/datasets_dataset_epic_v951_0000.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_v951_0000.csv.gz"
 
 kapply_mes       <- c(202011)  #El mes donde debo aplicar el modelo
 
@@ -55,9 +55,9 @@ ktest_mes_desde  <- 202011
 
 ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 202009#202010  #Obviamente, solo puedo entrenar hasta 202011
-ktrain_mes_desde    <- 202009#201901
-ktrain_meses_malos  <- c() #202006 )  #meses que quiero excluir del entrenamiento
+ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_desde    <- 201901
+ktrain_meses_malos  <- c(202006 )  #meses que quiero excluir del entrenamiento
 
 
 kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersampling
