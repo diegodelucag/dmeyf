@@ -108,7 +108,7 @@ param_basicos  <- list( objective= "binary",
                         #lambda_l2= 0.0,         #por ahora, lo dejo fijo
                         max_bin= 31,            #por ahora, lo dejo fijo
                         force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
-                       )
+)
 
 
 #Estos hiperparametros salieron de la optimizacion bayesiana del script 962
@@ -123,7 +123,7 @@ param_ganadores  <- list( "learning_rate"= 0.0587069865269586,
                           "max_depth"=  12,
                           "lambda_l1"= 7, 
                           "lambda_l2"= 49
-                        )
+)
 
 #junto ambas listas de parametros en una sola
 param_completo  <- c( param_basicos, param_ganadores )
@@ -137,12 +137,12 @@ tb_resultados  <- data.table( semilla= integer(),
                               ganancia= numeric() )
 
 set.seed( 102191 )   #dejo fija esta semilla
-CANTIDAD_SEMILLAS  <- 500
+CANTIDAD_SEMILLAS  <- 20
 
 #me genero un vector de semilla buscando numeros primos al azar
 primos  <- generate_primes(min=100000, max=1000000)  #genero TODOS los numeros primos entre 100k y 1M
 ksemillas  <- sample(primos)[ 1:CANTIDAD_SEMILLAS ]   #me quedo con CANTIDAD_SEMILLAS primos al azar
-ksemillas  <- c( 999983, ksemillas )
+ksemillas  <- c( 999979, ksemillas )
 
 
 for(  semillita  in  ksemillas )   #itero por las semillas

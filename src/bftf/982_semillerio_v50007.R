@@ -18,10 +18,10 @@ require("primes")  #para generar semillas
 directory.root <- "~/buckets/b1/"
 setwd( directory.root )
 
-kexperimento  <- 50001
+kexperimento  <- 50006
 
 kscript         <- "982_epic"
-karch_dataset   <- "./datasets/dataset_epic_v951_0001.csv.gz"  #el dataset que voy a utilizar
+karch_dataset   <- "./datasets/dataset_epic_v951_0006.csv.gz"  #el dataset que voy a utilizar
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
@@ -108,22 +108,22 @@ param_basicos  <- list( objective= "binary",
                         #lambda_l2= 0.0,         #por ahora, lo dejo fijo
                         max_bin= 31,            #por ahora, lo dejo fijo
                         force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
-                       )
+)
 
 
 #Estos hiperparametros salieron de la optimizacion bayesiana del script 962
-#ganancia  6222500  ( sobre la mitad de 202011 )
-#hiperparametros encontrados en la iteracion bayesiana 11 de un total de 300
-param_ganadores  <- list( "learning_rate"= 0.0566569144425115, 
-                          "feature_fraction"= 0.798091852984258,
-                          "min_data_in_leaf"= 293,
-                          "num_leaves"= 216,
-                          "num_iterations"= 119,
-                          "ratio_corte"= 0.0477224607299172,
-                          "max_depth"=  12,
-                          "lambda_l1"= 13, 
-                          "lambda_l2"= 95
-                        )
+#ganancia  6578750  ( sobre la mitad de 202011 )
+#hiperparametros encontrados en la iteracion bayesiana 295 de un total de 300
+param_ganadores  <- list( "learning_rate"= 0.049571446643509, 
+                          "feature_fraction"= 0.840985001886962,
+                          "min_data_in_leaf"= 537,
+                          "num_leaves"= 297,
+                          "num_iterations"= 304,
+                          "ratio_corte"= 0.0316127304528299,
+                          "max_depth"=   10,
+                          "lambda_l1"= 20, 
+                          "lambda_l2"= 143
+)
 
 #junto ambas listas de parametros en una sola
 param_completo  <- c( param_basicos, param_ganadores )
@@ -190,8 +190,6 @@ for(  semillita  in  ksemillas )   #itero por las semillas
            sep= "\t" )
 
 }
-
-
 
 #apagado de la maquina virtual, pero NO se borra
 system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)

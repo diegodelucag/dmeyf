@@ -137,12 +137,12 @@ tb_resultados  <- data.table( semilla= integer(),
                               ganancia= numeric() )
 
 set.seed( 102191 )   #dejo fija esta semilla
-CANTIDAD_SEMILLAS  <- 500
+CANTIDAD_SEMILLAS  <- 20
 
 #me genero un vector de semilla buscando numeros primos al azar
 primos  <- generate_primes(min=100000, max=1000000)  #genero TODOS los numeros primos entre 100k y 1M
 ksemillas  <- sample(primos)[ 1:CANTIDAD_SEMILLAS ]   #me quedo con CANTIDAD_SEMILLAS primos al azar
-ksemillas  <- c( 999983, ksemillas )
+ksemillas  <- c( 999979, ksemillas )
 
 
 for(  semillita  in  ksemillas )   #itero por las semillas
