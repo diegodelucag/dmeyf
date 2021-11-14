@@ -133,7 +133,7 @@ tb_resultados  <- data.table( semilla= integer(),
                               ganancia= numeric() )
 
 set.seed( 102191 )   #dejo fija esta semilla
-CANTIDAD_SEMILLAS  <- 20
+CANTIDAD_SEMILLAS  <- 50
 
 #me genero un vector de semilla buscando numeros primos al azar
 primos  <- generate_primes(min=100000, max=1000000)  #genero TODOS los numeros primos entre 100k y 1M
