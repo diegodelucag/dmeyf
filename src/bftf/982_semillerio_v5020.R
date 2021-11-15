@@ -21,7 +21,11 @@ setwd( directory.root )
 kexperimento  <- 5020
 
 kscript         <- "982_epic_ds0010" #"982_epic_ds0010_var_imp" "982_epic_ds0011"
-karch_dataset   <- "./datasets/dataset_epic_v951_0010.csv.gz"
+
+dataset<- fread("./datasets/dataset_epic_v951_0010.csv.gz")
+
+vector_azar  <- runif( nrow(dataset) )
+
 #./datasets/dataset_0010_var_imp.csv.gz
 #./datasets/dataset_epic_v951_0010.csv.gz  
 
@@ -32,7 +36,7 @@ kgen_mes_hasta   <- 202010  #hasta donde voy a entrenar
 kgen_mes_desde   <- 201801  #desde donde voy a entrenar (venia con 201901)
 kgen_meses_malos <- 202006  #el mes que voy a eliminar del entreanamiento
 
-kgen_subsampling <- 1.0     #esto es NO hacer undersampling
+kgen_subsampling <- 0.15     #esto es NO hacer undersampling
 
 campos_malos  <- c()   #aqui se deben cargar todos los campos culpables del Data Drifting
 
@@ -65,7 +69,7 @@ kresultados  <- paste0("./work/E",  kexperimento, "/E",  kexperimento, "_", kscr
 
 
 #cargo el dataset que tiene los 36 meses
-dataset  <- fread(karch_dataset)
+#dataset  <- fread(karch_dataset)
 
 #cargo los datos donde voy a aplicar el modelo
 dtest  <- copy( dataset[ foto_mes>= ktest_mes_desde &  foto_mes<= ktest_mes_hasta,  ] )
@@ -76,7 +80,7 @@ dataset[ , clase01:= ifelse( clase_ternaria=="CONTINUA", 0, 1 ) ]
 
 #agrego la marca de lo que necesito
 #SI hago undersampling de los CONTINUA
-vector_azar  <- runif( nrow(dataset) )
+#vector_azar  <- runif( nrow(dataset) )
 
 dataset[    foto_mes>= kgen_mes_desde  &
             foto_mes<= kgen_mes_hasta  & 
@@ -117,8 +121,7 @@ param_basicos  <- list( objective= "binary",
                           learning_rate= 0.02, 
                           feature_fraction= 0.50,
                           min_data_in_leaf= 4000,
-                          num_leaves= 600,
-                          early_stopping_rounds= 200 )
+                          num_leaves= 600 )
 
 
 #junto ambas listas de parametros en una sola
@@ -169,7 +172,7 @@ for(  semillita  in  ksemillas )   #itero por las semillas
                                                 ganancia ) )  #agrego la ganancia estandar
 
 
-  for( punto_meseta  in seq( 5000, 15000, by=500 ) )  #itero desde 5000 a 15000 , de a 500 
+  for( punto_meseta  in seq( 7000, 12000, by=500 ) )  #itero desde 5000 a 15000 , de a 500 
   {
     ganancia  <-  tb_meseta[ 1:punto_meseta, sum(gan) ]   #calculo la ganancia de los mejores punto_meseta registros
 
