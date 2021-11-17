@@ -1,6 +1,5 @@
 
 
-
 #Optimizacion Bayesiana de hiperparametros de  lightgbm
 #funciona automaticamente con EXPERIMENTOS
 #va generando incrementalmente salidas para kaggle
@@ -9,7 +8,7 @@
 
 #############################################################################
 
-#Modelo 0000_bajas
+#Modelo 0010_varimp
 
 #############################################################################
 
@@ -40,18 +39,18 @@ setwd( directory.root )
 
 
 
-kexperimento  <- 6001   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 6006   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "962_epic"
 
-karch_dataset    <- "./datasets/dataset_bajas_0000.csv.gz"
+karch_dataset    <- "./datasets/dataset_0010_var_imp.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
 
-ktrain_subsampling  <- 1 #CLARA 0,1 DIE 0,2  #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.15 #CLARA 0,1 DIE 0,2  #el undersampling que voy a hacer de los continua
 
 ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
 ktrain_mes_desde    <- 201801
@@ -487,19 +486,4 @@ if(!file.exists(kbayesiana)) {
 } else {
   run  <- mboContinue( kbayesiana )   #retomo en caso que ya exista
 }
-
-
-#apagado de la maquina virtual, pero NO se borra
-system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
-
-#suicidio,  elimina la maquina virtual directamente
-#system( "sleep 10  && 
-#        export NAME=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/name -H 'Metadata-Flavor: Google') &&
-#        export ZONE=$(curl -X GET http://metadata.google.internal/computeMetadata/v1/instance/zone -H 'Metadata-Flavor: Google') &&
-#        gcloud --quiet compute instances delete $NAME --zone=$ZONE",
-#        wait=FALSE )
-
-
-quit( save="no" )
-
 

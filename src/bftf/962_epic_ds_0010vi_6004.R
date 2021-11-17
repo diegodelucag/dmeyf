@@ -1,4 +1,7 @@
-
+#Necesita para correr en Google Cloud
+#128 GB de memoria RAM
+#256 GB de espacio en el disco local
+#8 vCPU
 
 
 #Optimizacion Bayesiana de hiperparametros de  lightgbm
@@ -9,7 +12,7 @@
 
 #############################################################################
 
-#Modelo 0000_bajas
+#Modelo 0010_varimp
 
 #############################################################################
 
@@ -40,18 +43,18 @@ setwd( directory.root )
 
 
 
-kexperimento  <- 6001   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 6004   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "962_epic"
 
-karch_dataset    <- "./datasets/dataset_bajas_0000.csv.gz"
+karch_dataset    <- "./datasets/dataset_0010_var_imp.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
 
-ktrain_subsampling  <- 1 #CLARA 0,1 DIE 0,2  #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.15 #CLARA 0,1 DIE 0,2  #el undersampling que voy a hacer de los continua
 
 ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
 ktrain_mes_desde    <- 201801
@@ -298,9 +301,9 @@ EstimarGanancia_lightgbm  <- function( x )
                           seed= 999983,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
                           min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          #                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          #                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 5,            #por ahora, lo dejo fijo
+#                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
+#                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          max_bin= 31,            #por ahora, lo dejo fijo
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
   )
@@ -487,6 +490,7 @@ if(!file.exists(kbayesiana)) {
 } else {
   run  <- mboContinue( kbayesiana )   #retomo en caso que ya exista
 }
+
 
 
 #apagado de la maquina virtual, pero NO se borra
