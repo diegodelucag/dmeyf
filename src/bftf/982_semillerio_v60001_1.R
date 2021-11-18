@@ -18,10 +18,10 @@ require("primes")  #para generar semillas
 directory.root <- "~/buckets/b1/"
 setwd( directory.root )
 
-kexperimento  <- 60004
+kexperimento  <- 60001
 
 kscript         <- "982_epic"
-karch_dataset   <- "./datasets/dataset_0010_var_imp.csv.gz"  #el dataset que voy a utilizar
+karch_dataset   <- "./datasets/dataset_epic_v951_0009.csv.gz"  #el dataset que voy a utilizar
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
@@ -30,7 +30,7 @@ kgen_mes_hasta   <- 202010  #hasta donde voy a entrenar
 kgen_mes_desde   <- 201801  #desde donde voy a entrenar (venia con 201901)
 kgen_meses_malos <- c( 202003, 202004,202005,202006 )  #el mes que voy a eliminar del entreanamiento
 
-kgen_subsampling <- 1.0     #esto es NO hacer undersampling
+kgen_subsampling <- 0.15     #esto es NO hacer undersampling
 
 campos_malos  <- c("Master_Finiciomora","Visa_Finiciomora","ccajas_transacciones")   #aqui se deben cargar todos los campos culpables del Data Drifting
 
@@ -106,22 +106,22 @@ param_basicos  <- list( objective= "binary",
                         min_gain_to_split= 0.0, #por ahora, lo dejo fijo
 #                        lambda_l1= 0.0,         #por ahora, lo dejo fijo
 #                        lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                        max_bin= 31,            #por ahora, lo dejo fijo
+                        max_bin= 5,            #por ahora, lo dejo fijo
                         force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
 )
 
 
 #Estos hiperparametros salieron de la optimizacion bayesiana del script 962
-#ganancia 6217500  ( sobre la mitad de 202011 )
-#hiperparametros encontrados en la iteracion bayesiana 60 de un total de 300
-param_ganadores  <- list( "learning_rate"= 0.0636455141741116, 
-                          "feature_fraction"= 0.602593675017839 ,
-                          "min_data_in_leaf"= 250 ,
-                          "num_leaves"= 465,
-                          "num_iterations"= 315 ,
-                          "lambda_l1"= 33.1374689962452,
-                          "lambda_l2"= 128.832515058442,
-                          "ratio_corte"=0.0383830015147331  )
+#ganancia  6027500  ( sobre la mitad de 202011 )
+#hiperparametros encontrados en la iteracion bayesiana 38 de un total de 300
+param_ganadores  <- list( "learning_rate"= 0.0752046073675714, 
+                          "feature_fraction"= 0.553785132529913,
+                          "min_data_in_leaf"=  5559,
+                          "num_leaves"= 852,
+                          "num_iterations"= 304 ,
+                          "lambda_l1"= 1.40111408727244,
+                          "lambda_l2"= 45.4506319779437,
+                          "ratio_corte"= 0.0386507996284301 )
                           
 
 #junto ambas listas de parametros en una sola

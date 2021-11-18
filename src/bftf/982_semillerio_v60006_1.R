@@ -18,7 +18,7 @@ require("primes")  #para generar semillas
 directory.root <- "~/buckets/b1/"
 setwd( directory.root )
 
-kexperimento  <- 60002
+kexperimento  <- 600061
 
 kscript         <- "982_epic"
 karch_dataset   <- "./datasets/dataset_0010_var_imp.csv.gz"  #el dataset que voy a utilizar

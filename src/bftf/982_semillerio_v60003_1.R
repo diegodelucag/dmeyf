@@ -18,10 +18,10 @@ require("primes")  #para generar semillas
 directory.root <- "~/buckets/b1/"
 setwd( directory.root )
 
-kexperimento  <- 60004
+kexperimento  <- 60003
 
 kscript         <- "982_epic"
-karch_dataset   <- "./datasets/dataset_0010_var_imp.csv.gz"  #el dataset que voy a utilizar
+karch_dataset   <- "./datasets/dataset_epic_v951_0009.csv.gz"  #el dataset que voy a utilizar
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
@@ -30,7 +30,7 @@ kgen_mes_hasta   <- 202010  #hasta donde voy a entrenar
 kgen_mes_desde   <- 201801  #desde donde voy a entrenar (venia con 201901)
 kgen_meses_malos <- c( 202003, 202004,202005,202006 )  #el mes que voy a eliminar del entreanamiento
 
-kgen_subsampling <- 1.0     #esto es NO hacer undersampling
+kgen_subsampling <- 0.15     #esto es NO hacer undersampling
 
 campos_malos  <- c("Master_Finiciomora","Visa_Finiciomora","ccajas_transacciones")   #aqui se deben cargar todos los campos culpables del Data Drifting
 
@@ -112,16 +112,16 @@ param_basicos  <- list( objective= "binary",
 
 
 #Estos hiperparametros salieron de la optimizacion bayesiana del script 962
-#ganancia 6217500  ( sobre la mitad de 202011 )
-#hiperparametros encontrados en la iteracion bayesiana 60 de un total de 300
-param_ganadores  <- list( "learning_rate"= 0.0636455141741116, 
-                          "feature_fraction"= 0.602593675017839 ,
-                          "min_data_in_leaf"= 250 ,
-                          "num_leaves"= 465,
-                          "num_iterations"= 315 ,
-                          "lambda_l1"= 33.1374689962452,
-                          "lambda_l2"= 128.832515058442,
-                          "ratio_corte"=0.0383830015147331  )
+#ganancia  6655000  ( sobre la mitad de 202011 )
+#hiperparametros encontrados en la iteracion bayesiana 120 de un total de 164
+param_ganadores  <- list( "learning_rate"= 0.0494327568528987, 
+                          "feature_fraction"= 0.876657836353849,
+                          "min_data_in_leaf"=  5114,
+                          "num_leaves"= 852,
+                          "num_iterations"= 656 ,
+                          "lambda_l1"= 72.8869979867246,
+                          "lambda_l2"= 120.338860867731,
+                          "ratio_corte"= 0.0411446695622338 )
                           
 
 #junto ambas listas de parametros en una sola
