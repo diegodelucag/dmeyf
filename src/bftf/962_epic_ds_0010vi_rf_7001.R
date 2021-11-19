@@ -39,7 +39,7 @@ setwd( directory.root )
 
 
 
-kexperimento  <- 7000   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 7001   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "962_epic"
 
@@ -71,7 +71,8 @@ hs <- makeParamSet(
   makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L),
   makeNumericParam("lambda_l1", lower=    0.0  , upper=    100.0),
   makeNumericParam("lambda_l2", lower=    0.0  , upper=    200.0),
-  makeNumericParam("min_gain_to_split", lower=    0.0  , upper=    0.9)
+  makeNumericParam("min_gain_to_split", lower=    0.0  , upper=    0.9),
+  makeNumericParam("bagging_fraction", lower=    0.6  , upper=    0.99)
 )
 
 #makeNumericParam("bagging_fraction", lower=    0.6  , upper=    0.99),
@@ -307,7 +308,7 @@ EstimarGanancia_lightgbm  <- function( x )
                           force_row_wise= TRUE,    #para que los alumnos no se atemoricen con tantos warning
                           boosting_type = "rf",
                           bagging_freq = 1  
-)
+  )
   
   
   #el parametro discolo, que depende de otro
@@ -492,6 +493,7 @@ if(!file.exists(kbayesiana)) {
 } else {
   run  <- mboContinue( kbayesiana )   #retomo en caso que ya exista
 }
+
 
 #apagado de la maquina virtual, pero NO se borra
 system( "sleep 10  &&  sudo shutdown -h now", wait=FALSE)
