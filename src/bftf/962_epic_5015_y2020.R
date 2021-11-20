@@ -3,18 +3,16 @@
 #256 GB de espacio en el disco local
 #8 vCPU
 
+#clase_binaria2   1={BAJA+2,BAJA+1}    0={CONTINUA}
+#Entrena en a union de VEINTE  meses de [201901, 202009] - { 202006 }  haciendo subsampling al 10% de los continua
+#Testea en  { 202011 }
+#estima automaticamente la cantidad de registros a enviar al medio de la meseta (en lugar de la prob de corte)
 
 #Optimizacion Bayesiana de hiperparametros de  lightgbm
 #funciona automaticamente con EXPERIMENTOS
 #va generando incrementalmente salidas para kaggle
 
 # WARNING  usted debe cambiar este script si lo corre en su propio Linux
-
-#############################################################################
-
-#Modelo dataset_bajas_0000.csv.gz
-
-#############################################################################
 
 #limpio la memoria
 rm( list=ls() )  #remove all objects
@@ -41,28 +39,28 @@ switch ( Sys.info()[['sysname']],
 #defino la carpeta donde trabajo
 setwd( directory.root )
 
-names(dataset)
 
-kexperimento  <- 0600   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
-kscript         <- "962_epic"
+kexperimento  <- 50152020   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
-karch_dataset    <- "./datasets/dataset_bajas_0000.csv.gz"
+kscript         <- "962_epic_5018"
+
+karch_dataset    <- "./datasets/dataset_epic_v951_0000.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
 
-ktrain_subsampling  <- 1.0 #CLARA 0,1 DIE 0,2  #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.15   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
-ktrain_mes_desde    <- 201801
-ktrain_meses_malos  <- c( 202003, 202004,202005,202006 )  #meses que quiero excluir del entrenamiento
+ktrain_mes_hasta    <- 202009  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_desde    <- 202001
+ktrain_meses_malos  <- c(20203,202004,202005,202006)  #meses que quiero excluir del entrenamiento
 
 
 kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersampling
-kgen_mes_desde    <- 201801
+kgen_mes_desde    <- 202001
 
 
 kBO_iter    <-  300   #cantidad de iteraciones de la Optimizacion Bayesiana
@@ -72,13 +70,14 @@ hs <- makeParamSet(
   makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.1),
   makeNumericParam("feature_fraction", lower=    0.1  , upper=    1.0),
   makeIntegerParam("min_data_in_leaf", lower=  200L   , upper= 8000L),
-  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L), 
-  makeNumericParam("lambda_l1", lower=    0.0  , upper=    100.0),
-  makeNumericParam("lambda_l2", lower=    0.0  , upper=    200.0)
+  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L),
+  makeIntegerParam("min_gain_to_split", lower=    0 , upper= 50000),
+  makeNumericParam("lambda_l1" ,  lower=0.0 , upper=  100.0),
+  makeNumericParam("lambda_l2" ,  lower=0.0 , upper=  100.0)
 )
 
 
-campos_malos  <- c("numero_de_cliente","Master_Finiciomora","Visa_Finiciomora","ccajas_transacciones")    #aqui se deben cargar todos los campos culpables del Data Drifting
+campos_malos  <- c("Master_Finiciomora","Visa_Finiciomora","ccajas_transacciones")    #aqui se deben cargar todos los campos culpables del Data Drifting
 
 ksemilla_azar  <- 999979  #Aqui poner la propia semilla
 #------------------------------------------------------------------------------
@@ -86,7 +85,7 @@ ksemilla_azar  <- 999979  #Aqui poner la propia semilla
 
 get_experimento  <- function()
 {
-  if( !file.exists( "./maestro.yaml" ) )  cat( file="./maestro.yaml", "experimento: 1000" )
+  if( !file.exists( "./maestro.yaml" ) )  cat( file="./maestro.yaml", "experimento: 5015_19" )
   
   exp  <- read_yaml( "./maestro.yaml" )
   experimento_actual  <- exp$experimento
@@ -300,7 +299,9 @@ EstimarGanancia_lightgbm  <- function( x )
                           verbosity= -100,
                           seed= 999983,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
-                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+#                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+#                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
+#                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
                           max_bin= 5,            #por ahora, lo dejo fijo
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
@@ -343,7 +344,7 @@ EstimarGanancia_lightgbm  <- function( x )
   {
     GLOBAL_ganancia_max  <<- ganancia  #asigno la nueva maxima ganancia a una variable GLOBAL, por eso el <<-
     
-    if( GLOBAL_iteracion > 30 )
+    if( GLOBAL_iteracion > 10 )
     {
       FullModelo( param_final )
       HemiModelos( param_final )

@@ -41,25 +41,25 @@ setwd( directory.root )
 
 
 
-kexperimento  <- 5015   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 50152018   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
 kscript         <- "962_epic_5018"
 
-karch_dataset    <- "./datasets/dataset_epic_v951_0010.csv.gz"
+karch_dataset    <- "./datasets/dataset_epic_v951_0000.csv.gz"
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
 ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
 ktest_mes_desde  <- 202011
 
-ktrain_subsampling  <- 0.1   #el undersampling que voy a hacer de los continua
+ktrain_subsampling  <- 0.15   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 201810  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_hasta    <- 201812  #Obviamente, solo puedo entrenar hasta 202011
 ktrain_mes_desde    <- 201801
-ktrain_meses_malos  <- c()  #meses que quiero excluir del entrenamiento
+ktrain_meses_malos  <- c(20203,202004,202005,202006)  #meses que quiero excluir del entrenamiento
 
 
-kgen_mes_hasta    <- 201810   #La generacion final para Kaggle, sin undersampling
+kgen_mes_hasta    <- 201812   #La generacion final para Kaggle, sin undersampling
 kgen_mes_desde    <- 201801
 
 
@@ -70,9 +70,10 @@ hs <- makeParamSet(
   makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.1),
   makeNumericParam("feature_fraction", lower=    0.1  , upper=    1.0),
   makeIntegerParam("min_data_in_leaf", lower=  200L   , upper= 8000L),
-  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L)
-  #makeIntegerParam("max_depth",        lower=    6L   , upper= 120L),  
-  #makeIntegerParam("max_bin",          lower= 2L, upper=    40L) #5-15-31
+  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L),
+  makeNumericParam("min_gain_to_split", lower=    0.0 , upper=    0.99),
+  makeNumericParam("lambda_l1"  = lower=0.0 , upper=  100.0),
+  makeNumericParam("lambda_l2"  = lower=0.0 , upper=  100.0)
 )
 
 campos_malos  <- c("Master_Finiciomora","Visa_Finiciomora","ccajas_transacciones")    #aqui se deben cargar todos los campos culpables del Data Drifting
@@ -297,10 +298,10 @@ EstimarGanancia_lightgbm  <- function( x )
                           verbosity= -100,
                           seed= 999983,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
-                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          max_bin= 31,            #por ahora, lo dejo fijo
+#                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+#                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
+#                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          max_bin= 5,            #por ahora, lo dejo fijo
                           num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
   )
