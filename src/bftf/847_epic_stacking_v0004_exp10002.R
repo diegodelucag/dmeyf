@@ -1,16 +1,17 @@
+#source("~/buckets/b1/crudoB/R/847_epic_stacking.r")
+
 #Necesita para correr en Google Cloud
-#128 GB de memoria RAM
+#16 GB de memoria RAM
 #256 GB de espacio en el disco local
 #8 vCPU
 
 #clase_binaria2   1={BAJA+2,BAJA+1}    0={CONTINUA}
-#Entrena en a union de VEINTE  meses de [201901, 202009] - { 202006 }  haciendo subsampling al 10% de los continua
-#Testea en  { 202011 }
-#estima automaticamente la cantidad de registros a enviar al medio de la meseta (en lugar de la prob de corte)
+#Entrena en 202009  con 5-fold cross validation
+#Aplica el modelo a 202011
 
-#Optimizacion Bayesiana de hiperparametros de  xgboost
 #funciona automaticamente con EXPERIMENTOS
 #va generando incrementalmente salidas para kaggle
+#genera archivos para stacking
 
 # WARNING  usted debe cambiar este script si lo corre en su propio Linux
 
@@ -22,7 +23,7 @@ require("data.table")
 require("rlist")
 require("yaml")
 
-require("xgboost")
+require("lightgbm")
 
 #paquetes necesarios para la Bayesian Optimization
 require("DiceKriging")
@@ -41,41 +42,40 @@ setwd( directory.root )
 
 
 
-kexperimento  <- 2000   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
+kexperimento  <- 10002   #NA si se corre la primera vez, un valor concreto si es para continuar procesando
 
-kscript         <- "962_epic_xgb"
+kscript         <- "847_epic_stacking"
 
-karch_dataset    <- "./datasets/dataset_epic_v952.csv.gz"
+karch_dataset    <- "./datasets/dataset_stacking_v0004.csv.gz"   #este dataset se genero en el script 812_dataset_epic.r
 
 kapply_mes       <- c(202101)  #El mes donde debo aplicar el modelo
 
-ktest_mes_hasta  <- 202011  #Esto es lo que uso para testing
-ktest_mes_desde  <- 202011
-
 ktrain_subsampling  <- 0.15   #el undersampling que voy a hacer de los continua
 
-ktrain_mes_hasta    <- 202010  #Obviamente, solo puedo entrenar hasta 202011
+ktrain_mes_hasta    <- 202011  #Obviamente, solo puedo entrenar hasta 202011
 ktrain_mes_desde    <- 202001
-ktrain_meses_malos  <- c( 202003,202004,202005,202006 )  #meses que quiero excluir del entrenamiento
 
+ktrain_meses_malos  <- c()  #meses que quiero excluir del entrenamiento
 
-kgen_mes_hasta    <- 202011   #La generacion final para Kaggle, sin undersampling
+kgen_mes_hasta    <- 202011  #Obviamente, solo puedo entrenar hasta 202011
 kgen_mes_desde    <- 202001
 
 
-kBO_iter    <-  100   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter    <-  600   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
-         makeNumericParam("eta",    lower=    0.02 , upper=    0.1), #learning_rate
-         makeNumericParam("colsample_bytree", lower=    0.1  , upper=    1.0), #feature_fraction
-         makeIntegerParam("max_leaves",       lower=  100L   , upper= 1024L), #num_leaves
-         makeNumericParam("gamma", lower= 0.0, upper= 100.0),
-         makeNumericParam("alpha", lower= 0.0, upper= 200.0),
-         makeNumericParam("lambda", lower= 0.0, upper= 100.0)
-                 )
+  makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.1),
+  makeNumericParam("feature_fraction", lower=    0.1  , upper=   0.8),
+  makeIntegerParam("min_data_in_leaf", lower=  200L   , upper= 8000L),
+  makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L),
+  makeNumericParam("lambda_l1", lower=    0.0  , upper=    100.0),
+  makeNumericParam("lambda_l2", lower=    0.0  , upper=    100.0),
+  makeNumericParam("min_gain_to_split", lower=    0.0  , upper=   50.0)
+)
 
-campos_malos  <- c("Master_Finiciomora","Visa_Finiciomora","ccajas_transacciones")   #aqui se deben cargar todos los campos culpables del Data Drifting
+
+campos_malos  <- c()   #aqui se deben cargar todos los campos culpables del Data Drifting
 
 ksemilla_azar  <- 999979  #Aqui poner la propia semilla
 #------------------------------------------------------------------------------
@@ -136,10 +136,10 @@ HemiModelos  <- function( hparam )
 {
 
   #Construyo el modelo sobre el fold=1
-  dgeneracion1  <- xgb.DMatrix( data=    data.matrix(  dataset[ generacion_final==1 & fold==1, campos_buenos, with=FALSE]),
+  dgeneracion1  <- lgb.Dataset( data=    data.matrix(  dataset[ generacion_final==1 & fold==1, campos_buenos, with=FALSE]),
                                 label=   dataset[ generacion_final==1 & fold==1, clase01] )
 
-  modelo_final1  <- xgboost( data= dgeneracion1,
+  modelo_final1  <- lightgbm( data= dgeneracion1,
                               param= hparam,
                               verbose= -100 )
 
@@ -158,11 +158,11 @@ HemiModelos  <- function( hparam )
   #AHORA SOBRE LA OTRA MITAD -----------------
 
   #Construyo el modelo sobre el fold=2
-  dgeneracion2  <- xgb.DMatrix( data=    data.matrix(  dataset[ generacion_final==1 & fold==2, campos_buenos, with=FALSE]),
+  dgeneracion2  <- lgb.Dataset( data=    data.matrix(  dataset[ generacion_final==1 & fold==2, campos_buenos, with=FALSE]),
                                 label=   dataset[ generacion_final==1 & fold==2, clase01]
                               )
 
-  modelo_final2  <- xgboost( data= dgeneracion2,
+  modelo_final2  <- lightgbm( data= dgeneracion2,
                               param= hparam,
                               verbose= -100
                             )
@@ -186,11 +186,11 @@ HemiModelos  <- function( hparam )
 FullModelo  <- function( hparam )
 {
   #entreno sin undersampling
-  dgeneracion  <- xgb.DMatrix( data=    data.matrix(  dataset[ generacion_final==1 , campos_buenos, with=FALSE]),
+  dgeneracion  <- lgb.Dataset( data=    data.matrix(  dataset[ generacion_final==1 , campos_buenos, with=FALSE]),
                                label=   dataset[ generacion_final==1, clase01]
                              )
 
-  modelo_final  <- xgboost( data= dgeneracion,
+  modelo_final  <- lightgbm( data= dgeneracion,
                              param= hparam,
                              verbose= -100
                            )
@@ -199,7 +199,7 @@ FullModelo  <- function( hparam )
   gc()
 
   #calculo la importancia de variables
-  tb_importancia  <- xgb.importance( model= modelo_final )
+  tb_importancia  <- lgb.importance( model= modelo_final )
   fwrite( tb_importancia, 
           file= paste0( kimp, "imp_", sprintf("%03d", GLOBAL_iteracion), ".txt"),
           sep="\t" )
@@ -253,17 +253,20 @@ FullModelo  <- function( hparam )
 
 VPOS_CORTE  <- c()
 
-fganancia_xgb_meseta  <- function(probs, datos) 
+fganancia_lgbm_meseta  <- function(probs, datos) 
 {
   vlabels  <- getinfo(datos, "label")
   vpesos   <- getinfo(datos, "weight")
 
   #solo sumo 48750 si vpesos > 1, hackeo 
-  tbl  <- as.data.table( list( "prob"=probs, "gan"= ifelse( vlabels==1 & vpesos > 1, 48750, -1250 ) ) )
+  tbl  <- as.data.table( list( "prob"= probs, 
+                               "gan"=  ifelse( vlabels==1 & vpesos <= 1, 48750, -1250 ) *vpesos,
+                               "peso"=  vpesos
+                               ) )
 
   setorder( tbl, -prob )
-  tbl[ , posicion := .I ]
   tbl[ , gan_acum :=  cumsum( gan ) ]
+  tbl[ , posicion :=  cumsum( peso ) ]
   setorder( tbl, -gan_acum )   #voy por la meseta
 
   gan  <- mean( tbl[ 1:10,  gan_acum] )  #meseta de tamaño 10
@@ -277,29 +280,31 @@ fganancia_xgb_meseta  <- function(probs, datos)
 }
 #------------------------------------------------------------------------------
 
-x  <- list( "eta"= 0.02, 
-            "colsample_bytree"= 0.50,
-            "max_leaves"= 600 )
+x  <- list( "learning_rate"= 0.02, 
+            "feature_fraction"= 0.50,
+            "min_data_in_leaf"= 4000,
+            "num_leaves"= 600 )
 
 
-EstimarGanancia_xgboost  <- function( x )
+EstimarGanancia_lightgbm  <- function( x )
 {
   GLOBAL_iteracion  <<- GLOBAL_iteracion + 1
 
   gc()
 
-  param_basicos  <- list( objective= "binary:logistic",
-                          eval_metric= "custom",
-                          #first_metric_only= TRUE,
-                          validate_parameters= FALSE, #feature_pre_filter
+  param_basicos  <- list( objective= "binary",
+                          metric= "custom",
+                          first_metric_only= TRUE,
+                          boost_from_average= TRUE,
+                          feature_pre_filter= FALSE,
                           verbosity= -100,
                           seed= 999983,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
-#                          gamma = 0.0, #por ahora, lo dejo fijo
-#                          alpha= 0.0,         #lambda_l1 #por ahora, lo dejo fijo
-#                          lambda= 0.0,     #lambda_l2 #por ahora, lo dejo fijo
-                          max_bin= 31,            #por ahora, lo dejo fijo
-                          nrounds= 9999,   #un numero muy grande, lo limita early_stopping_rounds
+#                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+#                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
+#                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          max_bin= 511,            #por ahora, lo dejo fijo
+                          num_iterations= 9999,   #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
                         )
 
@@ -309,52 +314,50 @@ EstimarGanancia_xgboost  <- function( x )
   param_completo  <- c( param_basicos, param_variable, x )
 
   VPOS_CORTE  <<- c()
+  kfolds  <- 5
   set.seed( 999983 )
-  modelo  <- xgb.train( data= dtrain,
-                        valids= list( valid= dvalid ),
-                        eval= fganancia_xgb_meseta,
-                        param= param_completo,
-                        verbose= -100 )
+  modelocv  <- lgb.cv( data= dtrain,
+                       eval= fganancia_lgbm_meseta,
+                       stratified= TRUE, #sobre el cross validation
+                       nfold= kfolds,    #folds del cross validation
+                       param= param_completo,
+                       verbose= -100
+                      )
+
+
+  ganancia  <- unlist(modelocv$record_evals$valid$ganancia$eval)[ modelocv$best_iter ]
+  pos_corte  <-  sum( VPOS_CORTE[  (kfolds*modelocv$best_iter+1):( kfolds*modelocv$best_iter + kfolds ) ] )
 
   #unlist(modelo$record_evals$valid$ganancia$eval)[ modelo$best_iter ]
 
   #calculo la ganancia sobre los datos de testing
-  prediccion  <- predict( modelo, data.matrix( dataset[ test==1, campos_buenos, with=FALSE]) )
+  ganancia_normalizada  <- ganancia * kfolds 
 
-  tb_test  <- as.data.table( list( "ganancia"=dataset[ test==1, ifelse(clase_ternaria=="BAJA+2", 48750, -1250)],
-                                   "prob"= prediccion ) )
-
-  setorder( tb_test, -prob )
-  ganancia  <- tb_test[  1:   VPOS_CORTE[ modelo$best_iter ], sum( ganancia ) ]
-
-  attr(ganancia,"extras" )  <- list("nrounds"= modelo$best_iter)  #esta es la forma de devolver un parametro extra
+  attr(ganancia_normalizada,"extras" )  <- list("num_iterations"= modelocv$best_iter)  #esta es la forma de devolver un parametro extra
 
   param_final  <- copy( param_completo )
   param_final["early_stopping_rounds"]  <- NULL
-  param_final$num_iterations <- modelo$best_iter  #asigno el mejor num_iterations
-  param_final$ratio_corte  <- VPOS_CORTE[ modelo$best_iter ] / nrow( dvalid )
+  param_final$num_iterations <- modelocv$best_iter  #asigno el mejor num_iterations
+  param_final$ratio_corte  <- pos_corte /  sum(getinfo(dtrain, "weight"))
 
 
   #si tengo una ganancia superadora, genero el archivo para Kaggle
-  if( ganancia > GLOBAL_ganancia_max )
+  if( ganancia_normalizada > GLOBAL_ganancia_max)
   {
-    GLOBAL_ganancia_max  <<- ganancia  #asigno la nueva maxima ganancia a una variable GLOBAL, por eso el <<-
+    GLOBAL_ganancia_max  <<- ganancia_normalizada  #asigno la nueva maxima ganancia a una variable GLOBAL, por eso el <<-
 
-    if( GLOBAL_iteracion > 30 )
-    {
-      FullModelo( param_final )
-      HemiModelos( param_final )
-      fwrite( tb_modelitos, file= kmodelitos, sep= "," )
-    }
+    FullModelo( param_final )
+    HemiModelos( param_final )
+    fwrite( tb_modelitos, file= kmodelitos, sep= "," )
   }
 
    #logueo 
    xx  <- param_final
    xx$iteracion_bayesiana  <- GLOBAL_iteracion
-   xx$ganancia  <- ganancia  #le agrego la ganancia
+   xx$ganancia  <- ganancia_normalizada  #le agrego la ganancia
    loguear( xx,  arch= klog )
 
-   return( ganancia )
+   return( ganancia_normalizada )
 }
 #------------------------------------------------------------------------------
 #Aqui empieza el programa
@@ -362,16 +365,16 @@ EstimarGanancia_xgboost  <- function( x )
 if( is.na(kexperimento ) )   kexperimento <- get_experimento()  #creo el experimento
 
 #en estos archivos quedan los resultados
-dir.create( paste0( "./work/Exgb",  kexperimento, "/" ) )     #creo carpeta del experimento dentro de work
-dir.create( paste0( "./kaggle/Exgb",  kexperimento, "/" ) )   #creo carpeta del experimento dentro de kaggle
-dir.create( paste0( "./kaggle/Exgb",  kexperimento, "/meseta/" ) )   #creo carpeta del experimento dentro de kaggle
+dir.create( paste0( "./work/E",  kexperimento, "/" ) )     #creo carpeta del experimento dentro de work
+dir.create( paste0( "./kaggle/E",  kexperimento, "/" ) )   #creo carpeta del experimento dentro de kaggle
+dir.create( paste0( "./kaggle/E",  kexperimento, "/meseta/" ) )   #creo carpeta del experimento dentro de kaggle
 
-kbayesiana    <- paste0("./work/Exgb",  kexperimento, "/E",  kexperimento, "_", kscript, ".RDATA" )
-klog          <- paste0("./work/Exgb",  kexperimento, "/E",  kexperimento, "_", kscript, "_BOlog.txt" )
-kimp          <- paste0("./work/Exgb",  kexperimento, "/E",  kexperimento, "_", kscript, "_" )
-kkaggle       <- paste0("./kaggle/Exgb",kexperimento, "/E",  kexperimento, "_", kscript, "_" )
-kkagglemeseta <- paste0("./kaggle/Exgb",kexperimento, "/meseta/E",  kexperimento, "_", kscript, "_" )
-kmodelitos    <- paste0("./modelitos/Exgb", kexperimento, "_modelitos.csv.gz" )
+kbayesiana    <- paste0("./work/E",  kexperimento, "/E",  kexperimento, "_", kscript, ".RDATA" )
+klog          <- paste0("./work/E",  kexperimento, "/E",  kexperimento, "_", kscript, "_BOlog.txt" )
+kimp          <- paste0("./work/E",  kexperimento, "/E",  kexperimento, "_", kscript, "_" )
+kkaggle       <- paste0("./kaggle/E",kexperimento, "/E",  kexperimento, "_", kscript, "_" )
+kkagglemeseta <- paste0("./kaggle/E",kexperimento, "/meseta/E",  kexperimento, "_", kscript, "_" )
+kmodelitos    <- paste0("./modelitos/E", kexperimento, "_modelitos.csv.gz" )
 
 
 
@@ -423,40 +426,23 @@ dataset[    foto_mes>= ktrain_mes_desde  &
           entrenamiento:= 1L ]  #donde entreno
 
 
-#defino donde valido
-dataset[    foto_mes>= ktest_mes_desde &
-            foto_mes<= ktest_mes_hasta &
-            fold== 1,
-          validacion:= 1L ]  #donde entreno
-
-#defino donde testeo
-dataset[    foto_mes>= ktest_mes_desde &
-            foto_mes<= ktest_mes_hasta &
-            fold== 2,
-          test:= 1L ]  #donde entreno
-
-
-
 #los campos que se van a utilizar
 campos_buenos  <- setdiff( colnames(dataset), 
-                           c("clase_ternaria","clase01", "generacion_final", "entrenamiento", "validacion", "test", "fold", campos_malos) )
+                           c("clase_ternaria","clase01", "generacion_final", "entrenamiento", "fold", campos_malos) )
 
-#dejo los datos en el formato que necesita xgboost
+#dejo los datos en el formato que necesita LightGBM
 #uso el weight como un truco ESPANTOSO para saber la clase real
-dtrain  <- xgb.DMatrix( data=    data.matrix(  dataset[ entrenamiento==1 , campos_buenos, with=FALSE]),
+dtrain  <- lgb.Dataset( data=    data.matrix(  dataset[ entrenamiento==1 , campos_buenos, with=FALSE]),
                         label=   dataset[ entrenamiento==1, clase01],
-                        weight=  dataset[ entrenamiento==1, ifelse(clase_ternaria=="BAJA+2", 1.0000001, 1.0)] 
-                      )
-
-dvalid  <- xgb.DMatrix( data=    data.matrix(  dataset[validacion==1 , campos_buenos, with=FALSE]),
-                        label=   dataset[ validacion==1, clase01],
-                        weight=  dataset[ validacion==1, ifelse(clase_ternaria=="BAJA+2", 1.0000001, 1.0)]
+                        weight=  dataset[ entrenamiento==1, ifelse(clase_ternaria=="CONTINUA", 1/ktrain_subsampling,
+                                                                   ifelse( clase_ternaria=="BAJA+2", 1, 1.0000001))] ,
+                        free_raw_data= TRUE
                       )
 
 
 #Aqui comienza la configuracion de la Bayesian Optimization
 
-funcion_optimizar  <- EstimarGanancia_xgboost   #la funcion que voy a maximizar
+funcion_optimizar  <- EstimarGanancia_lightgbm   #la funcion que voy a maximizar
 
 configureMlr( show.learner.output= FALSE)
 
