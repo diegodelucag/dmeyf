@@ -66,12 +66,12 @@ kBO_iter    <-  600   #cantidad de iteraciones de la Optimizacion Bayesiana
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
   makeNumericParam("learning_rate",    lower=    0.02 , upper=    0.05),
-  makeNumericParam("feature_fraction", lower=    0.1  , upper=    0.9),
-  makeIntegerParam("min_data_in_leaf", lower=  1200L   , upper= 8000L),
+  makeNumericParam("feature_fraction", lower=    0.1  , upper=    0.8),
+  makeIntegerParam("min_data_in_leaf", lower=  800L   , upper= 4000L),
   makeIntegerParam("num_leaves",       lower=  100L   , upper= 1024L),
-  makeNumericParam("lambda_l1", lower=    0.0  , upper=    50.0),
+  makeNumericParam("lambda_l1", lower=    0.0  , upper=    20.0),
   makeNumericParam("lambda_l2", lower=    0.0  , upper=    20.0),
-  makeNumericParam("min_gain_to_split", lower=    0.0  , upper=   3.0)
+  makeNumericParam("min_gain_to_split", lower=    0.0  , upper=   2.0)
 )
 
 
@@ -229,7 +229,7 @@ FullModelo  <- function( hparam )
           sep= "," )
   
   base  <- round( pos_corte / 500 ) * 500   - 3000
-  evaluados  <- c( seq(from=base, to=pmax(base+6000,15000), by=500 ) , pos_corte )  
+  evaluados  <- c( seq(from=base, to=pmax(base+8000,15000), by=500 ) , pos_corte )  
   evaluados  <- sort( evaluados )
   
   for(  pos  in  evaluados )
